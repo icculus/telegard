@@ -6,7 +6,7 @@
 (*>                                                                         <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit logon2;
 
 interface
@@ -391,9 +391,15 @@ begin
 
   if ((useron) and (usernum>0)) then
   begin
+    {rcg11242000 dosisms.}
+    {
     purgedir(systat.temppath+'1\');
     purgedir(systat.temppath+'2\');
     purgedir(systat.temppath+'3\');
+    }
+    purgedir(systat.temppath+'1/');
+    purgedir(systat.temppath+'2/');
+    purgedir(systat.temppath+'3/');
 
     slogging:=TRUE;
 

@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L-,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L-,N-,O+,R-,S+,V-}
 unit archive1;
 
 interface
@@ -40,7 +40,9 @@ var odir,odir2:astr;
     att:word;
 begin
   s:=fexpand(s);
-  while copy(s,length(s),1)='\' do s:=copy(s,1,length(s)-1);
+  {rcg11242000 DOSism}
+  {while copy(s,length(s),1)='\' do s:=copy(s,1,length(s)-1);}
+  while copy(s,length(s),1)='/' do s:=copy(s,1,length(s)-1);
   getdir(0,odir); getdir(exdrv(s),odir2);
   chdir(s);
   findfirst('*.*',AnyFile-Directory,dirinfo);
@@ -62,10 +64,18 @@ end;
 
 procedure arcdecomp(var ok:boolean; atype:integer; fn,fspec:astr);
 begin
-  purgedir(systat.temppath+'1\');
+  {rcg11242000 DOSism.}
+  {purgedir(systat.temppath+'1\');}
+  purgedir(systat.temppath+'1/');
 
   shel1;
+  {rcg11242000 DOSism.}
+  {
   execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'1\',
+            arcmci(systat.filearcinfo[atype].unarcline,fn,fspec),
+            systat.filearcinfo[atype].succlevel);
+  }
+  execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'1/',
             arcmci(systat.filearcinfo[atype].unarcline,fn,fspec),
             systat.filearcinfo[atype].succlevel);
   shel2;
@@ -81,7 +91,13 @@ procedure arccomp(var ok:boolean; atype:integer; fn,fspec:astr);
  *}
 begin
   shel1;
+  {rcg11242000 DOSism.}
+  {
   execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'1\',
+            arcmci(systat.filearcinfo[atype].arcline,fn,fspec),
+            systat.filearcinfo[atype].succlevel);
+  }
+  execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'1/',
             arcmci(systat.filearcinfo[atype].arcline,fn,fspec),
             systat.filearcinfo[atype].succlevel);
   shel2;
@@ -89,7 +105,9 @@ begin
   if (not ok) then
     sysoplog('Archive "'+fn+'": Errors during compression');
 
-  purgedir(systat.temppath+'1\');
+  {rcg11242000 DOSism.}
+  {purgedir(systat.temppath+'1\');}
+  purgedir(systat.temppath+'1/');
 end;
 
 procedure arccomment(var ok:boolean; atype,cnum:integer; fn:astr);
@@ -104,7 +122,14 @@ begin
 
     shel1;
     b:=systat.swapshell; systat.swapshell:=FALSE;
+
+    {rcg11242000 DOSism.}
+    {
     execbatch(ok,FALSE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'1\',
+              arcmci(systat.filearcinfo[atype].cmtline,fn,'')+' <'+tfn,
+              systat.filearcinfo[atype].succlevel);
+    }
+    execbatch(ok,FALSE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'1/',
               arcmci(systat.filearcinfo[atype].cmtline,fn,'')+' <'+tfn,
               systat.filearcinfo[atype].succlevel);
     systat.swapshell:=b;
@@ -118,7 +143,13 @@ procedure arcintegritytest(var ok:boolean; atype:integer; fn:astr);
 begin
   if (systat.filearcinfo[atype].testline<>'') then begin
     shel1;
+    {rcg11242000 DOSism.}
+    {
     execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'1\',
+              arcmci(systat.filearcinfo[atype].testline,fn,''),
+              systat.filearcinfo[atype].succlevel);
+    }
+    execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'1/',
               arcmci(systat.filearcinfo[atype].testline,fn,''),
               systat.filearcinfo[atype].succlevel);
     shel2;
@@ -203,7 +234,9 @@ begin
   nl;
   prompt('Already in TEMP: ');
   numfiles:=0; tsiz:=0;
-  findfirst(systat.temppath+'3\*.*',anyfile-dos.directory,dirinfo);
+  {rcg11242000 DOSism.}
+  {findfirst(systat.temppath+'3\*.*',anyfile-dos.directory,dirinfo);}
+  findfirst(systat.temppath+'3/*.*',anyfile-dos.directory,dirinfo);
   found:=(doserror=0);
   while (found) do begin
     inc(tsiz,dirinfo.size);
@@ -325,7 +358,13 @@ begin
                 ok:=TRUE;
                 s:=sqoutsp(s);
                 shel1;
+                {rcg11242000 DOSism}
+                {
                 execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'3\',
+                          arcmci(systat.filearcinfo[atype].unarcline,fn,s),
+                          systat.filearcinfo[atype].succlevel);
+                }
+                execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'3/',
                           arcmci(systat.filearcinfo[atype].unarcline,fn,s),
                           systat.filearcinfo[atype].succlevel);
                 shel2;
@@ -342,7 +381,9 @@ begin
           until (done) or (hangup);
         end;
         if (tocopy) then begin
-          s:=systat.temppath+'3\'+ns+es; (*sqoutsp(f.filename);*)
+          {rcg11242000 DOSism.}
+          {s:=systat.temppath+'3\'+ns+es; (*sqoutsp(f.filename);*)}
+          s:=systat.temppath+'3/'+ns+es; (*sqoutsp(f.filename);*)
           sprompt(#3#5+'Progress: ');
           copyfile(ok,nospace,TRUE,fn,s);
           if (ok) then
@@ -405,7 +446,9 @@ begin
       'A':begin
             nl; prt('Archive name: '); input(fn,12);
             if (hangup) then exit;
-            fn:=systat.temppath+'3\'+fn;
+            {rcg11242000 DOSism.}
+            {fn:=systat.temppath+'3\'+fn;}
+            fn:=systat.temppath+'3/'+fn;
             loaduboard(fileboard);
             if (pos('.',fn)=0) and (memuboard.arctype<>0) then
               fn:=fn+'.'+systat.filearcinfo[memuboard.arctype].ext;
@@ -424,7 +467,13 @@ begin
                 nl;
                 ok:=TRUE;
                 shel1;
+                {rcg11242000 DOSism.}
+                {
                 execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'3\',
+                          arcmci(systat.filearcinfo[atype].arcline,fn,s),
+                          systat.filearcinfo[atype].succlevel);
+                }
+                execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'3/',
                           arcmci(systat.filearcinfo[atype].arcline,fn,s),
                           systat.filearcinfo[atype].succlevel);
                 shel2;
@@ -442,7 +491,9 @@ begin
             if (hangup) then exit;
             if (not okname(s)) then print('Illegal filename.')
             else begin
-              s:=systat.temppath+'3\'+s;
+              {rcg11242000 DOSism.}
+              {s:=systat.temppath+'3\'+s;}
+              s:=systat.temppath+'3/'+s;
               assign(fi,s);
               {$I-} reset(fi); {$I+}
               if (ioresult=0) then begin
@@ -468,8 +519,13 @@ begin
                   fiscan(pl); { loads in memuboard }
                   su:=memuboard;
                   with memuboard do begin
+                    {rcg11242000 DOSisms.}
+                    {
                     dlpath:=systat.temppath+'3\';
                     ulpath:=systat.temppath+'3\';
+                    }
+                    dlpath:=systat.temppath+'3/';
+                    ulpath:=systat.temppath+'3/';
                     name:='Temporary directory';
                     fbstat:=[];
                   end;
@@ -492,7 +548,9 @@ begin
           end;
       'L':begin
             nl;
-            dir(systat.temppath+'3\','*.*',TRUE);
+            {rcg11242000 DOSism.}
+            {dir(systat.temppath+'3\','*.*',TRUE);}
+            dir(systat.temppath+'3/','*.*',TRUE);
             nl;
           end;
       'R':begin
@@ -500,7 +558,9 @@ begin
             if (hangup) then exit;
             if (isul(s)) then print('Illegal filename.')
             else begin
-              s:=systat.temppath+'3\'+s;
+              {rcg11242000 DOSism.}
+              {s:=systat.temppath+'3\'+s;}
+              s:=systat.temppath+'3/'+s;
               ffile(s);
               if (not found) then
                 print('File not found.')
@@ -509,7 +569,9 @@ begin
                   if not ((dirinfo.attr and VolumeID=VolumeID) or
                           (dirinfo.attr and Directory=Directory)) then begin
                     s:=dirinfo.name;
-                    assign(fi,systat.temppath+'3\'+s);
+                    {rcg11242000 DOSism.}
+                    {assign(fi,systat.temppath+'3\'+s);}
+                    assign(fi,systat.temppath+'3/'+s);
                     {$I-} erase(fi); {$I+}
                     if (ioresult<>0) then begin
                       sysoplog('Error removing from temp. dir: "'+s+'"');
@@ -527,7 +589,9 @@ begin
             if (hangup) then exit;
             if (not okname(s)) then print('Illegal filename.')
             else begin
-              s1:=systat.temppath+'3\'+s;
+              {rcg11242000 DOSism.}
+              {s1:=systat.temppath+'3\'+s;}
+              s1:=systat.temppath+'3/'+s;
               if (not exist(s1)) then
                 print('File not found.')
               else begin
@@ -541,9 +605,13 @@ begin
             nl; prt('File mask: '); input(fn,12);
             if (hangup) then exit;
             abort:=FALSE; next:=FALSE;
-            ffile(systat.temppath+'3\'+fn);
+            {rcg11242000 DOSism.}
+            {ffile(systat.temppath+'3\'+fn);}
+            ffile(systat.temppath+'3/'+fn);
             repeat
-              lfi(systat.temppath+'3\'+dirinfo.name,abort,next);
+              {rcg11242000 DOSism.}
+              {lfi(systat.temppath+'3\'+dirinfo.name,abort,next);}
+              lfi(systat.temppath+'3/'+dirinfo.name,abort,next);
               nfile;
             until (not found) or (abort) or (hangup);
           end;

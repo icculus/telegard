@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit file9;
 
 interface
@@ -64,7 +64,9 @@ var abort,next,nofiles:boolean;
     dfs:longint;
     numfiles:integer;
 begin
-  if (copy(cd,length(cd),1)<>'\') then cd:=cd+'\';
+  {rcg11242000 DOSism.}
+  {if (copy(cd,length(cd),1)<>'\') then cd:=cd+'\';}
+  if (copy(cd,length(cd),1)<>'/') then cd:=cd+'/';
   abort:=FALSE;
   cd:=cd+x;
   if (fso) then begin

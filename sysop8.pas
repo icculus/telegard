@@ -5,7 +5,7 @@
 (*>  SysOp functions: Message base editor                                   <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit sysop8;
 
 interface
@@ -420,15 +420,24 @@ var f1:file;
                       end;
                       nl; prompt('Current message path: ');
                       if (msgpath<>'') then print(msgpath) else print('*NONE*');
-                      nl; print('Press <CR> to use default path "'+systat.msgpath+filename+'\"');
+                      {rcg11242000 DOSism.}
+                      {nl; print('Press <CR> to use default path "'+systat.msgpath+filename+'\"');}
+                      nl; print('Press <CR> to use default path "'+systat.msgpath+filename+'/"');
                       nl; print('Enter new message path:');
                       prt(':'); mpl(40); input(s,40); s:=sqoutsp(s);
                       if (s<>'') then begin
-                        while (copy(s,length(s)-1,2)='\\') do s:=copy(s,1,length(s)-1);
+                        {rcg11242000 DOSisms.}
+                        {
+			while (copy(s,length(s)-1,2)='\\') do s:=copy(s,1,length(s)-1);
                         if (copy(s,length(s),1)<>'\') then s:=s+'\';
+                        }
+                        while (copy(s,length(s)-1,2)='//') do s:=copy(s,1,length(s)-1);
+                        if (copy(s,length(s),1)<>'/') then s:=s+'/';
                         msgpath:=s;
                       end;
-                      if ((s='') and (msgpath='')) then msgpath:=systat.msgpath+filename+'\';
+                      {rcg11242000 DOSism.}
+                      {if ((s='') and (msgpath='')) then msgpath:=systat.msgpath+filename+'\';}
+                      if ((s='') and (msgpath='')) then msgpath:=systat.msgpath+filename+'/';
                       if (not existdir(msgpath)) then begin
                         nl; print('"'+msgpath+'" does not exist.');
                         if (pynq('Create message directory now? ')) then begin

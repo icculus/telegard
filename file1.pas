@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit file1;
 
 interface
@@ -1011,7 +1011,9 @@ procedure do_unlisted_download;
 var s:astr;
 begin
   nl;
-  print('Enter file name to download (d:path\filename.ext)');
+  {rcg11242000 DOSism.}
+  {print('Enter file name to download (d:path\filename.ext)');}
+  print('Enter file name to download (path/filename.ext)');
   prt(':'); mpl(78); input(s,78);
   unlisted_download(s);
 end;

@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 {$M 32150,0,0}          { Declared here suffices for all Units as well! }
 
 uses
@@ -140,8 +140,13 @@ end;
 
 procedure alignpathname(var s:astr);
 begin
+  {rcg11242000 DOSisms.}
+  {
   if copy(s,length(s),1)<>'\' then s:=s+'\';
   while (copy(s,length(s)-1,2)='\\') and (length(s)>2) do
+  }
+  if copy(s,length(s),1)<>'/' then s:=s+'/';
+  while (copy(s,length(s)-1,2)='//') and (length(s)>2) do
     s:=copy(s,1,length(s)-1);
 end;
 

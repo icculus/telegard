@@ -5,7 +5,7 @@
 (*>  SysOp functions: Voting question editor, voting results output.        <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit sysop11;
 
 interface

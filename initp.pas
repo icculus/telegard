@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit initp;
 
 interface
@@ -167,6 +167,7 @@ var filv:text;
   procedure showmem;
   var i,p:longint;
   begin
+exit;
     textbackground(1); textcolor(15); gotoxy(20,13);
     p:=40-(((40*memavail) div MaxHeapSpace)+1);
     for i:=1 to 40 do

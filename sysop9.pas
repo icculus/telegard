@@ -5,7 +5,7 @@
 (*>  SysOp functions: File base editor                                      <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit sysop9;
 
 interface
@@ -129,7 +129,9 @@ var i1,ii,culb,i2:integer;
         getdir(0,s);
         name:='<< Not Used >>';
         filename:='NEWDIR';
-        dlpath:=s[1]+':DLOADS\';
+        {rcg11242000 DOSism.}
+        {dlpath:=s[1]+':DLOADS\';}
+        dlpath:=s[1]+':DLOADS/';
         ulpath:=dlpath;
         maxfiles:=2000;
         password:='';
@@ -287,8 +289,13 @@ var i1,ii,culb,i2:integer;
                     print('Enter new download path:');
                     prt(':'); mpl(40); input(s,40); s:=sqoutsp(s);
                     if (s<>'') then begin
+                      {rcg11242000 DOSisms.}
+                      {
                       while (copy(s,length(s)-1,2)='\\') do s:=copy(s,1,length(s)-1);
                       if (copy(s,length(s),1)<>'\') then s:=s+'\';
+                      }
+                      while (copy(s,length(s)-1,2)='//') do s:=copy(s,1,length(s)-1);
+                      if (copy(s,length(s),1)<>'/') then s:=s+'/';
                       if (s<>dlpath) then changed:=TRUE;
                       dlpath:=s;
                       if (not existdir(s)) then begin
@@ -308,8 +315,13 @@ var i1,ii,culb,i2:integer;
                     prt(':'); mpl(40); input(s,40); s:=sqoutsp(s);
                     if ((s='D') or (s='d')) then s:=dlpath;
                     if (s<>'') then begin
-                      while (copy(s,length(s)-1,2)='\\') do s:=copy(s,1,length(s)-1);
+                      {rcg11242000 DOSism.}
+                      {
+		      while (copy(s,length(s)-1,2)='\\') do s:=copy(s,1,length(s)-1);
                       if (copy(s,length(s),1)<>'\') then s:=s+'\';
+                      }
+		      while (copy(s,length(s)-1,2)='//') do s:=copy(s,1,length(s)-1);
+                      if (copy(s,length(s),1)<>'/') then s:=s+'/';
                       if (s<>ulpath) then changed:=TRUE;
                       ulpath:=s;
                       if (not existdir(s)) then begin

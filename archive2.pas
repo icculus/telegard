@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L-,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L-,N-,O+,R-,S+,V-}
 unit archive2;
 
 interface
@@ -79,7 +79,9 @@ var fl:array[1..maxfiles] of astr;
     end else begin
       oldnumfl:=numfl;
       fsplit(fn,dstr,nstr,estr); s:=dstr;
-      while (copy(s,length(s),1)='\') do s:=copy(s,1,length(s)-1);
+      {rcg11242000 DOSism.}
+      {while (copy(s,length(s),1)='\') do s:=copy(s,1,length(s)-1);}
+      while (copy(s,length(s),1)='/') do s:=copy(s,1,length(s)-1);
       {$I-} chdir(s); {$I+}
       if ioresult<>0 then print('Path not found.')
       else begin
@@ -199,7 +201,9 @@ var fl:array[1..maxfiles] of astr;
           else begin
             ok:=TRUE;
             s:=copy(fn,1,pos('.',fn))+systat.filearcinfo[toa].ext;
-            conva(ok,atype,bb,systat.temppath+'1\',sqoutsp(fn),sqoutsp(s));
+            {rcg11242000 DOSism}
+            {conva(ok,atype,bb,systat.temppath+'1\',sqoutsp(fn),sqoutsp(s));}
+            conva(ok,atype,bb,systat.temppath+'1/',sqoutsp(fn),sqoutsp(s));
             if (ok) then begin
               assign(fi,sqoutsp(fn));
               {$I-} reset(fi); {$I+}
@@ -331,8 +335,14 @@ begin
                           ok:=TRUE;
                           star('Adding '+cstr(j)+' files to archive...');
                           shel1;
+                          {rcg11242000 DOSism}
+                          {
                           execbatch(ok,TRUE,'tgtemp1.bat','tgtemp1.$$$',
                                     systat.temppath+'1\',s1,
+                                    systat.filearcinfo[atype].succlevel);
+                          }
+			  execbatch(ok,TRUE,'tgtemp1.bat','tgtemp1.$$$',
+                                    systat.temppath+'1/',s1,
                                     systat.filearcinfo[atype].succlevel);
                           shel2;
                           if (not ok) then begin
@@ -492,7 +502,9 @@ begin
                     star('Converting "'+fn+'"');
                     ok:=TRUE;
                     s:=copy(fn,1,pos('.',s))+systat.filearcinfo[bb].ext;
-                    conva(ok,atype,bb,systat.temppath+'1\',fn,s);
+                    {rcg11242000 DOSism.}
+                    {conva(ok,atype,bb,systat.temppath+'1\',fn,s);}
+                    conva(ok,atype,bb,systat.temppath+'1/',fn,s);
                     if (ok) then begin
                       assign(fi,sqoutsp(fn));
                       {$I-} reset(fi); {$I+}

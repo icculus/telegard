@@ -9,7 +9,7 @@
 (*****************************************************************************)
 program init;
 
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 {$M 50000,0,1024}       { Declared here suffices for all Units as well! }
 
 uses

@@ -1,3 +1,22 @@
+2000-11-24  Ryan C. Gordon   <icculus@lokigames.com>
+    * Aha! I think I stumbled upon the keypressed() problem. Looks like a
+      piece of the overlay code was still in there and causing problems.
+      Will investigate more some other time. Ugh.
+    * Changed timer() in common.pas to not use int21h services.
+    * Lots more DOSisms removed. Did a grep for the DOS backslash pathchar.
+    * Added TODO.
+    * Hack for Y2K bug in ageuser() (common.pas).
+    * Changed all implementations of exdrv(). So much code duplication...
+    * Lots of the system seems to be working, now, at first glance.
+
+2000-11-23  Ryan C. Gordon   <icculus@lokigames.com>
+
+    * Oh my god. Almost every damn source file has {$D-} in it, which
+      turns off debugging symbols. Removed, and now I can run bbs under
+      GDB. Thank heavens. I wonder if {$D-} means something different under
+      Turbo Pascal 6.0...in fact, there's a lot of these sort of things in
+      the source that should probably be controlled via the Makefile instead.
+
 2000-11-18  Ryan C. Gordon   <icculus@lokigames.com>
 
     * Stubbed DOSism in file2.pas.

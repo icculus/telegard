@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit file12;
 
 interface
@@ -199,7 +199,12 @@ begin
       getdatetime(xferstart);
       if (useron) then shel(caps(thisuser.name)+' is batch uploading!')
                   else shel('Receiving file(s)...');
+      {rcg11242000 DOSism.}
+      {
       execbatch(dok,FALSE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'2\',
+                bproline1(protocol.ulcmd),-1);
+      }
+      execbatch(dok,FALSE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'2/',
                 bproline1(protocol.ulcmd),-1);
       shel2;
       getdatetime(xferend);
@@ -222,7 +227,9 @@ begin
       tconvtime:=0.0; takeawayulrefundgot:=0.0;
       totb:=0; totfils:=0; totb1:=0; totfils1:=0; totpts:=0;
 
-      findfirst(systat.temppath+'2\*.*',anyfile-directory,dirinfo);
+      {rcg11242000 DOSism.}
+      {findfirst(systat.temppath+'2\*.*',anyfile-directory,dirinfo);}
+      findfirst(systat.temppath+'2/*.*',anyfile-directory,dirinfo);
       while (doserror=0) do begin
         inc(totfils1);
         inc(totb1,dirinfo.size);
@@ -279,7 +286,9 @@ begin
 
         print('Uploads detected:');
         nl;
-        dir(systat.temppath+'2\','*.*',TRUE);
+        {rcg11242000 DOSism.}
+        {dir(systat.temppath+'2\','*.*',TRUE);}
+        dir(systat.temppath+'2/','*.*',TRUE);
         nl;
         star('# files uploaded:   '+cstr(totfils1)+' files.');
         star('File size uploaded: '+cstrl(totb1)+' bytes.');
@@ -296,7 +305,9 @@ begin
       {* files already in the upload batch queue done during the second pass *}
 
       for passn:=1 to 2 do begin
-        findfirst(systat.temppath+'2\*.*',anyfile-directory,dirinfo);
+        {rcg11242000 DOSism.}
+        {findfirst(systat.temppath+'2\*.*',anyfile-directory,dirinfo);}
+        findfirst(systat.temppath+'2/*.*',anyfile-directory,dirinfo);
         while (doserror=0) do begin
           fn:=sqoutsp(dirinfo.name);
           nl;
@@ -358,7 +369,12 @@ begin
 
             close(ulff); fiscan(pl);
 
-            arcstuff(ok,convt,blks,convtime,TRUE,systat.temppath+'2\',
+            {rcg11242000 DOSism.}
+            {
+	    arcstuff(ok,convt,blks,convtime,TRUE,systat.temppath+'2\',
+                     fn,f.description);
+            }
+            arcstuff(ok,convt,blks,convtime,TRUE,systat.temppath+'2/',
                      fn,f.description);
             tconvtime:=tconvtime+convtime; f.blocks:=blks;
             doffstuff(f,fn,gotpts);
@@ -368,7 +384,9 @@ begin
             if (ok) then begin
               star('Moving file to '+#3#5+memuboard.name);
               sprompt(#3#5+'Progress: ');
-              movefile(fok,nospace,TRUE,systat.temppath+'2\'+fn,memuboard.dlpath+fn);
+              {rcg11242000 DOSism.}
+              {movefile(fok,nospace,TRUE,systat.temppath+'2\'+fn,memuboard.dlpath+fn);}
+              movefile(fok,nospace,TRUE,systat.temppath+'2/'+fn,memuboard.dlpath+fn);
               if (fok) then begin
                 nl;
                 newff(f,v);
@@ -391,7 +409,9 @@ begin
                 dyny:=TRUE;
                 if pynq('Save file for a later resume? ') then begin
                   sprompt(#3#5+'Progress: ');
-                  movefile(fok,nospace,TRUE,systat.temppath+'2\'+fn,memuboard.dlpath+fn);
+                  {rcg11242000 DOSism}
+                  {movefile(fok,nospace,TRUE,systat.temppath+'2\'+fn,memuboard.dlpath+fn);}
+                  movefile(fok,nospace,TRUE,systat.temppath+'2/'+fn,memuboard.dlpath+fn);
                   if (fok) then begin
                     nl;
                     doffstuff(f,fn,gotpts);
@@ -406,7 +426,9 @@ begin
               end;
               if (not (resumelater in f.filestat)) then begin
                 s:='file deleted';
-                assign(fi,systat.temppath+'2\'+fn); erase(fi);
+                {rcg11242000 DOSism.}
+                {assign(fi,systat.temppath+'2\'+fn); erase(fi);}
+                assign(fi,systat.temppath+'2/'+fn); erase(fi);
               end;
               sysoplog(#3#3+'Errors batch uploading "'+sqoutsp(fn)+'" - '+s);
             end;

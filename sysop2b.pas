@@ -6,7 +6,7 @@
 (*>                                                                         <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit sysop2b;
 
 interface
@@ -190,7 +190,9 @@ begin
               prt(' path:');
               nl; mpl(79); input(s,79);
               if (s<>'') then begin
-                if (copy(s,length(s),1)<>'\') then s:=s+'\';
+                {rcg11242000 DOSism.}
+                {if (copy(s,length(s),1)<>'\') then s:=s+'\';}
+                if (copy(s,length(s),1)<>'\') then s:=s+'/';
                 if (wantit) then
                   case c of
                     '1':gfilepath:=s;     '2':afilepath:=s;

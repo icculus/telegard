@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 {$M 50000,0,1000}      { Declared here suffices for all Units as well! }
 
 uses
@@ -86,8 +86,13 @@ end;
 
 procedure alignpathname(var s:astr);
 begin
+  {rcg11242000 DOSisms.}
+  {
   if copy(s,length(s),1)<>'\' then s:=s+'\';
   while (copy(s,length(s)-1,2)='\\') and (length(s)>2) do
+  }
+  if copy(s,length(s),1)<>'/' then s:=s+'/';
+  while (copy(s,length(s)-1,2)='//') and (length(s)>2) do
     s:=copy(s,1,length(s)-1);
 end;
 
@@ -182,8 +187,12 @@ end;
 
 function exdrv(s:astr):byte;
 begin
+  {rcg11242000 point at root drive always. Ugh.}
+  {
   s:=fexpand(s);
   exdrv:=ord(s[1])-64;
+  }
+  exdrv:=3;
 end;
 
 procedure movefile(srcname,destpath:string);
@@ -1187,7 +1196,9 @@ begin
     writeln('Now you need to enter your Telegard MSGS directory, where you');
     writeln('will later be putting all of your message files in.');
     writeln;
-    writeln('This is probably "'+tgpath+'MSGS\" ...');
+    {rcg11242000 DOSism.}
+    {writeln('This is probably "'+tgpath+'MSGS\" ...');}
+    writeln('This is probably "'+tgpath+'MSGS/" ...');
     writeln;
     textcolor(9); write('Telegard MSGS Path: '); infield(tmsgpath,40);
     if (tmsgpath='') then ee('ABORTED');

@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit file0;
 
 interface
@@ -107,6 +107,7 @@ var savedir:astr;
     okd:boolean;
 begin
   okd:=TRUE;
+{ !!! Check this! }
   s:=bslash(FALSE,fexpand(s));
 
   if ((length(s)=2) and (copy(s,2,1)=':')) then begin

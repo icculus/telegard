@@ -5,7 +5,7 @@
 (*>  SysOp functions: System Configuration Editor -- "E" command.           <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit sysop2e;
 
 interface

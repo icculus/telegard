@@ -6,7 +6,7 @@
 (*>                                                                         <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit misc2;
 
 interface
@@ -462,7 +462,9 @@ var gfil:file of tfilerec;
     nl;
     prompt('Already in TEMP: ');
     numfiles:=0; tsiz:=0;
-    findfirst(systat.temppath+'3\*.*',anyfile-dos.directory,dirinfo);
+    {rcg11242000 DOSism.}
+    {findfirst(systat.temppath+'3\*.*',anyfile-dos.directory,dirinfo);}
+    findfirst(systat.temppath+'3/*.*',anyfile-dos.directory,dirinfo);
     found:=(doserror=0);
     while (found) do begin
       inc(tsiz,dirinfo.size);
@@ -495,7 +497,9 @@ var gfil:file of tfilerec;
       if (gftit[i].gfile) then begin
         seek(gfil,gftit[i].arn); read(gfil,b);
         s:=systat.tfilepath+b.filen;
-        s2:=systat.temppath+'3\'+b.filen;
+        {rcg11242000 DOSism.}
+        {s2:=systat.temppath+'3\'+b.filen;}
+        s2:=systat.temppath+'3/'+b.filen;
         sprompt(#3#5+'Progress: ');
         copyfile(ok,nospace,TRUE,s,s2);
         if (ok) then

@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit execbat;
 
 interface
@@ -47,7 +47,9 @@ begin
 
   getdir(0,odir);
   dir:=fexpand(dir);
-  while copy(dir,length(dir),1)='\' do dir:=copy(dir,1,length(dir)-1);
+  {rcg11242000 DOSism.}
+  {while copy(dir,length(dir),1)='\' do dir:=copy(dir,1,length(dir)-1);}
+  while copy(dir,length(dir),1)='/' do dir:=copy(dir,1,length(dir)-1);
   assign(bfp,bfn);
   rewrite(bfp);
   writeln(bfp,'echo off');
@@ -90,7 +92,9 @@ begin
 
   getdir(0,odir);
   dir:=fexpand(dir);
-  while copy(dir,length(dir),1)='\' do dir:=copy(dir,1,length(dir)-1);
+  {rcg11242000 DOSism.}
+  {while copy(dir,length(dir),1)='\' do dir:=copy(dir,1,length(dir)-1);}
+  while copy(dir,length(dir),1)='/' do dir:=copy(dir,1,length(dir)-1);
   assign(bfp,bfn);
   rewrite(bfp);
   writeln(bfp,'echo off');

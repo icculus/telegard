@@ -1,6 +1,6 @@
 uses crt,dos;
 
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 {$M 50000,0,90000}      { Declared here suffices for all Units as well! }
 {$I rec16e1.pas}
 
@@ -55,8 +55,12 @@ end;
 
 function exdrv(s:astr):byte;
 begin
+  {rcg11242000 point at root drive always. Ugh.}
+  {
   s:=fexpand(s);
   exdrv:=ord(s[1])-64;
+  }
+  exdrv:=3;
 end;
 
 procedure movefile(srcname,destpath:string);
@@ -123,7 +127,9 @@ var j,k:integer;
     f:file;
     lastm,thism:messages;   {* keep track of mass-mail duplicates *}
 begin
-  while copy(npath,length(npath),1)='\' do
+  {rcg11242000 DOSism.}
+  {while copy(npath,length(npath),1)='\' do}
+  while copy(npath,length(npath),1)='/' do
     npath:=copy(npath,1,length(npath)-1);
   getdir(0,odir);
   {$I-} chdir(npath); {$I+}
@@ -150,8 +156,13 @@ begin
           thism:=mr.msg;
           gotoxy(wherex,wherey-1); clreol;
           inc(k);
-          star('Message file #'+cstr(k)+' of '+
+          {rcg11242000 DOSism.}
+          {
+	  star('Message file #'+cstr(k)+' of '+
                 cstr(filesize(mailfile))+': '+npath+'\'+s);
+          }
+          star('Message file #'+cstr(k)+' of '+
+                cstr(filesize(mailfile))+': '+npath+'/'+s);
           if ((thism.ltr<>lastm.ltr) or
               (thism.number<>lastm.number) or
               (thism.ext<>lastm.ext)) then begin
@@ -159,7 +170,9 @@ begin
             {$I-} reset(f); {$I+}
             if ioresult=0 then begin
               close(f);
-              movefile(s1,npath+'\');
+              {rcg11242000 DOSism.}
+              {movefile(s1,npath+'\');}
+              movefile(s1,npath+'/');
               lastm:=thism;
             end else star('File does not exist: '+s1);
             lastm:=thism;
@@ -177,7 +190,9 @@ var j,k:integer;
     f:file;
     mary:array[0..200] of messagerec;
 begin
-  while copy(npath,length(npath),1)='\' do
+  {rcg11242000 DOSism.}
+  {while copy(npath,length(npath),1)='\' do}
+  while copy(npath,length(npath),1)='/' do
     npath:=copy(npath,1,length(npath)-1);
   with brd do begin
     getdir(0,odir);
@@ -211,9 +226,15 @@ begin
               close(f);
               gotoxy(wherex,wherey-1); clreol;
               inc(k);
-              star('Message file #'+cstr(k)+' of '+
+              {rcg11242000 DOSisms.}
+              {
+	      star('Message file #'+cstr(k)+' of '+
                     cstr(mary[0].message.number)+': '+npath+'\'+s);
               movefile(s1,npath+'\');
+              }
+              star('Message file #'+cstr(k)+' of '+
+                    cstr(mary[0].message.number)+': '+npath+'/'+s);
+              movefile(s1,npath+'/');
             end else star('File does not exist: '+s1);
           end;
       end else star('Unable to open file: '+systat.gfilepath+brd.filename+'.BRD');
@@ -233,14 +254,14 @@ begin
   star('This program can do all the work of seperating all the messages');
   star('in each base into their own directories.');
   writeln;
-  star('Message directories will be created off of your current Telegard MSGS\');
+  star('Message directories will be created off of your current Telegard MSGS/');
   star('directory according to the *.BRD FILENAMEs of each message base.');
   writeln;
   star('Example:');
-  star('"'+systat.pmsgpath+'EMAIL\" for private mail');
-  star('"'+systat.pmsgpath+'GENERAL\" for message base #1');
+  star('"'+systat.pmsgpath+'EMAIL/" for private mail');
+  star('"'+systat.pmsgpath+'GENERAL/" for message base #1');
   star(' (if msg base #1 filename is "GENERAL")');
-  star('"'+systat.pmsgpath+'MISC\" for message base #2');
+  star('"'+systat.pmsgpath+'MISC/" for message base #2');
   star(' (if msg base #2 filename is "MISC")');
   star('And so on.');
   writeln;
@@ -257,15 +278,23 @@ begin
   reset(bf);
   for i:=0 to filesize(bf)-1 do begin
     seek(bf,i); read(bf,brd);
-    brd.msgpath:=brd.msgpath+brd.filename+'\';
+    {rcg11242000 DOSism.}
+    {brd.msgpath:=brd.msgpath+brd.filename+'\';}
+    brd.msgpath:=brd.msgpath+brd.filename+'/';
     seek(bf,i); write(bf,brd);
     star('Moving messages in '+brd.filename+'.BRD ('+brd.name+') to "'+brd.msgpath+'"');
     movemsgbase(brd,brd.msgpath,i+1);
   end;
   close(bf);
   chdir(sp);
+  {rcg11242000 DOSisms.}
+  {
   ttl('Moving private mail into "'+systat.pmsgpath+'EMAIL\"');
   moveprivmail(systat.pmsgpath+'EMAIL\');
   systat.pmsgpath:=systat.pmsgpath+'EMAIL\';
+  }
+  ttl('Moving private mail into "'+systat.pmsgpath+'EMAIL/"');
+  moveprivmail(systat.pmsgpath+'EMAIL/');
+  systat.pmsgpath:=systat.pmsgpath+'EMAIL/';
   rewrite(systatf); write(systatf,systat); close(systatf);
 end.

@@ -13,7 +13,7 @@ Version 1.3 - 5/02/89
   flush swap file before execing
 }
 
-{$A+,B-,D-,E+,F+,I-,L-,N-,O-,R-,S-,V-}
+{$A+,B-,E+,F+,I-,L-,N-,O-,R-,S-,V-}
 
 unit ExecSwap;
   {-Memory-efficient DOS EXEC call}

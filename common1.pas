@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit common1;
 
 interface
@@ -572,12 +572,19 @@ begin
     end
     else if ((xx='/HELP') or (xx='/?')) then begin
       nl;
-      sprint('^5/TYPE d:\path\filename.ext^3: Type a file');
+      {rcg11242000 DOSism.}
+      {sprint('^5/TYPE d:\path\filename.ext^3: Type a file');}
+      sprint('^5/TYPE /path/filename.ext^3: Type a file');
       sprint('^5/BYE^3:   Hang up');
       sprint('^5/CLS^3:   Clear the screen');
       sprint('^5/PAGE^3:  Page the SysOp and User');
+      {rcg11242000 DOSism}
+      {
       if (thisuser.sl=255) then
         sprint('^5/SHELL^3: Shell to DOS with user (255 SL ^5ONLY^3)');
+      }
+      if (thisuser.sl=255) then
+        sprint('^5/SHELL^3: Shell to operating system with user (255 SL ^5ONLY^3)');
       sprint('^5/Q^3:     Exit chat mode');
       nl;
     end

@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit file5;
 
 interface
@@ -74,7 +74,9 @@ var curdir,s,s1:astr;
     abort:=FALSE; next:=FALSE; nocmd:=FALSE;
     for i:=1 to 9 do xword[i]:=allcaps(xword[i]);
     s:=xword[1];
-    if ((pos('\',xword[2])<>0) or (pos('..',xword[2])<>0)) and
+    {rcg11242000 DOSism.}
+    {if ((pos('\',xword[2])<>0) or (pos('..',xword[2])<>0)) and}
+    if ((pos('/',xword[2])<>0) or (pos('..',xword[2])<>0)) and
        (restr) then exit;
 
     if (s='DIR/W') then s:='DIR *.* /W';
@@ -138,8 +140,11 @@ var curdir,s,s1:astr;
       if (s2='') then s2:='*.*';
       if (not iswildcard(xword[2])) then begin
         ffile(xword[2]);
-        if ((found) and (dirinfo.attr=directory)) or
-           ((length(s1)=3) and (s1[3]='\')) then begin   {* root directory *}
+        {rcg11242000 DOSism.}
+        (*if ((found) and (dirinfo.attr=directory)) or
+           ((length(s1)=3) and (s1[3]='\')) then begin   {* root directory *}*)
+        if (((found) and (dirinfo.attr=directory)) or
+           (s1[1]='/')) then begin   {* root directory *}
           s1:=bslash(TRUE,xword[2]);
           s2:='*.*';
         end;
@@ -173,6 +178,8 @@ var curdir,s,s1:astr;
           xword[3]:=fexpand(xword[3]);
           ffile(xword[3]);
           b:=((found) and (dirinfo.attr and directory=directory));
+
+{rcg11242000 !!! Look at this. }
           if ((not b) and (copy(xword[3],2,2)=':\') and
               (length(xword[3])=3)) then b:=TRUE;
 
@@ -226,6 +233,8 @@ var curdir,s,s1:astr;
           xword[3]:=fexpand(xword[3]);
           ffile(xword[3]);
           b:=((found) and (dirinfo.attr and directory=directory));
+
+{rcg11242000 !!! Look at this. }
           if ((not b) and (copy(xword[3],2,2)=':\') and
               (length(xword[3])=3)) then b:=TRUE;
 
@@ -390,7 +399,12 @@ var curdir,s,s1:astr;
             if (j=0) then invarc
             else begin
               ok:=TRUE;
-              conva(ok,i,j,systat.temppath+'1\',sqoutsp(fexpand(xword[2])),
+              {rcg11242000 DOSism.}
+              {
+	      conva(ok,i,j,systat.temppath+'1\',sqoutsp(fexpand(xword[2])),
+                    sqoutsp(fexpand(s3)));
+              }
+              conva(ok,i,j,systat.temppath+'1/',sqoutsp(fexpand(xword[2])),
                     sqoutsp(fexpand(s3)));
               if (ok) then begin
                 assign(fi,sqoutsp(fexpand(xword[2])));

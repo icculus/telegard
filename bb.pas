@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 {$M 32150,0,0}          { Declared here suffices for all Units as well! }
 
 program BatchBackup;
@@ -17,7 +17,9 @@ type
         end;
 
 const
-  lastspec='c:\lastbak.txt';
+  {rcg11242000 uh...DOSism. uh...}
+  {lastspec='c:\lastbak.txt';}
+  lastspec='./lastbak.txt';
   cline='tape SBK @D:\/S-\TRAP*.MSG/S-\BBS.OVR/S-\BBS.EXE/S/A/C/C+/-O/R@T/LBAK@D@N';
   lodrv:char='C';
   hidrv:char='E';

@@ -5,7 +5,7 @@
 (*>  Other menu functions - generic, list, etc.                             <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit menus2;
 
 interface

@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 {$M 50000,0,1024}       { Declared here suffices for all Units as well! }
 
 uses
@@ -256,8 +256,12 @@ end;
 
 function exdrv(s:astr):byte;
 begin
+  {rcg11242000 point at root drive always. Ugh.}
+  {
   s:=fexpand(s);
   exdrv:=ord(s[1])-64;
+  }
+  exdrv:=3;
 end;
 
 procedure movefile(srcname,destpath:string);
@@ -613,7 +617,9 @@ var i,j,k:integer;
       i,j:integer;
   begin
     for i:=1 to 3 do begin
-      while copy(newpath[i],length(newpath[i]),1)='\' do
+      {rcg11242000 DOSism.}
+      {while copy(newpath[i],length(newpath[i]),1)='\' do}
+      while copy(newpath[i],length(newpath[i]),1)='/' do
         newpath[i]:=copy(newpath[i],1,length(newpath[i])-1);
       case i of 1:s:='AFILES'; 2:s:='TRAP'; 3:s:='TEMP'; end;
       star(s+' path ("'+fexpand(newpath[i])+'")');
@@ -625,14 +631,20 @@ var i,j,k:integer;
       end;
       if (i=3) then
         for j:=1 to 3 do begin
-          {$I-} mkdir(fexpand(newpath[i]+'\'+cstr(j))); {$I+}
+          {rcg11242000 dosism.}
+          (*{$I-} mkdir(fexpand(newpath[i]+'\'+cstr(j))); {$I+}*)
+          {$I-} mkdir(fexpand(newpath[i]+'/'+cstr(j))); {$I+}
           if (ioresult<>0) then begin
             writeln;
-            star('Error creating directory "'+fexpand(newpath[i]+'\'+cstr(j))+'"');
+            {rcg11242000 dosism.}
+            {star('Error creating directory "'+fexpand(newpath[i]+'\'+cstr(j))+'"');}
+            star('Error creating directory "'+fexpand(newpath[i]+'/'+cstr(j))+'"');
             halt(1);
           end;
         end;
-      newpath[i]:=newpath[i]+'\';
+      {rcg11242000 dosism.}
+      {newpath[i]:=newpath[i]+'\';}
+      newpath[i]:=newpath[i]+'/';
     end;
   end;
 

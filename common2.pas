@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit common2;
 
 interface
@@ -328,7 +328,9 @@ end;
 procedure savesystat;
 var systatf:file of systatrec;
 begin
-  assign(systatf,start_dir+'\status.dat');
+  {rcg11242000 DOSism.}
+  {assign(systatf,start_dir+'\status.dat');}
+  assign(systatf,start_dir+'/status.dat');
   rewrite(systatf); write(systatf,systat); close(systatf);
 end;
 

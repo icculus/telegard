@@ -5,7 +5,7 @@
 (*>  SysOp functions: System Configuration Editor -- "F" command.           <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit sysop2f;
 
 interface
@@ -48,7 +48,9 @@ begin
       printacr(s,abort,next);
       printacr('H. Auto-validate ALL files ULed?  :'+syn(validateallfiles),abort,next);
       printacr('I. Remote DOS re-direction device :'+systat.remdevice,abort,next);
-      printacr('J. Max k-bytes allowed in TEMP\3\ :'+cstr(systat.maxintemp),abort,next);
+      {rcg11242000 DOSism.}
+      {printacr('J. Max k-bytes allowed in TEMP\3\ :'+cstr(systat.maxintemp),abort,next);}
+      printacr('J. Max k-bytes allowed in TEMP/3/ :'+cstr(systat.maxintemp),abort,next);
       printacr('K. Min k-bytes to save for resume :'+cstr(systat.minresume),abort,next);
       nl;
       prt('Enter selection (A-K) [Q]uit : '); onek(c,'QABCDEFGHIJK'^M);

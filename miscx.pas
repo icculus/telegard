@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit miscx;
 
 interface
@@ -182,9 +182,15 @@ begin
 
   realsl:=thisuser.sl; realdsl:=thisuser.dsl;
   commandline('Purging files in TEMP directories 1, 2, and 3 ...');
+  {rcg11242000 DOSisms.}
+  {
   purgedir(systat.temppath+'1\');
   purgedir(systat.temppath+'2\');
   purgedir(systat.temppath+'3\');
+  }
+  purgedir(systat.temppath+'1/');
+  purgedir(systat.temppath+'2/');
+  purgedir(systat.temppath+'3/');
 
   if (systat.lastdate<>date) then begin
     prompt('Please wait ....');

@@ -5,7 +5,7 @@
 (*>                 and Todd Bolitho - All Rights Reserved.                 <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O-,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O-,R-,S+,V-}
 {$M $4000,0,0}
 
 program miniterm;
@@ -340,11 +340,15 @@ var c,bl,bl2:char;
       s:astr;
   begin
     b:=0;
-    for a:=1 to length(fn) do if fn[a]='\' then b:=a;
+    {rcg11242000 dosism.}
+    {for a:=1 to length(fn) do if fn[a]='\' then b:=a;}
+    for a:=1 to length(fn) do if fn[a]='/' then b:=a;
     if b<>0 then filepath:=copy(fn,1,b)
     else begin
       getdir(0,s);
-      filepath:=s+'\';
+      {rcg11242000 dosism.}
+      {filepath:=s+'\';}
+      filepath:=s+'/';
     end;
   end;
 
@@ -1047,9 +1051,16 @@ var c,bl,bl2:char;
       if (waitbaud=9600) then maxs:=4;
     end;
 
+    {rcg11242000 dosisms.}
+    {
     loading(start_dir+'\miniterm.fon');
     if not exist(start_dir+'\miniterm.fon') then begin
       assign(fil,start_dir+'\miniterm.fon');
+    }
+
+    loading(start_dir+'/miniterm.fon');
+    if not exist(start_dir+'/miniterm.fon') then begin
+      assign(fil,start_dir+'/miniterm.fon');
       rewrite(fil);
       with ns[1] do begin
         name:='Grosse Pointe Centrale';
@@ -1060,7 +1071,9 @@ var c,bl,bl2:char;
       close(fil);
     end;
 
-    assign(fil,start_dir+'\miniterm.fon');
+    {rcg11242000 DOSism.}
+    {assign(fil,start_dir+'\miniterm.fon');}
+    assign(fil,start_dir+'/miniterm.fon');
     reset(fil);
     hientrynum:=0;
     repeat
@@ -1072,17 +1085,28 @@ var c,bl,bl2:char;
     pages:=((hientrynum-1) div 10)+1;
     pagnum:=1;
 
+    {rcg11242000 DOSisms.}
+    {
     loading(start_dir+'\miniterm.cfg');
     if not exist(start_dir+'\miniterm.cfg') then begin
       assign(cfgfil,start_dir+'\miniterm.cfg');
+    }
+
+    loading(start_dir+'/miniterm.cfg');
+    if not exist(start_dir+'/miniterm.cfg') then begin
+      assign(cfgfil,start_dir+'/miniterm.cfg');
       rewrite(cfgfil);
       with mini do begin
-        dpath:=start_dir+'\';
+        {rcg11242000 dosism.}
+        {dpath:=start_dir+'\';}
+        dpath:=start_dir+'/';
       end;
       write(cfgfil,mini);
       close(cfgfil);
     end;
-    assign(cfgfil,start_dir+'\miniterm.cfg');
+    {rcg11242000 DOSism.}
+    {assign(cfgfil,start_dir+'\miniterm.cfg');}
+    assign(cfgfil,start_dir+'/miniterm.cfg');
     reset(cfgfil); read(cfgfil,mini); close(cfgfil);
 
     removewindow(wind);

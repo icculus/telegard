@@ -5,7 +5,7 @@
 (*>  Online door procedures.                                                <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit doors;
 
 interface
@@ -60,7 +60,9 @@ begin
         'I':begin
               loaduboard(fileboard);
               sda:=systat.gfilepath;
-              if (copy(sda,length(sda),1)<>'\') then sda:=sda+'\';
+              {rcg11242000 DOSism.}
+              {if (copy(sda,length(sda),1)<>'\') then sda:=sda+'\';}
+              if (copy(sda,length(sda),1)<>'/') then sda:=sda+'/';
               sda:=sda+memuboard.filename+'.DIR';
             end;
         'L':begin

@@ -42,7 +42,7 @@
  *            3.  Corrected errors in and updated documentation.
  *)
 
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit file4;
 
 interface
@@ -473,8 +473,15 @@ begin
           reset(fp,1);                      {* back to start of file *}
 
           p:=0;                             {* drop drive and pathname *}
-          for i:=1 to length(infile) do
+
+          {rcg11242000 DOSism.}
+          {
+	  for i:=1 to length(infile) do
             if infile[i] in [':','\'] then p:=i;
+          }
+          for i:=1 to length(infile) do
+            if infile[i] in [':','/'] then p:=i;
+
           filename:=copy(infile,p+1,length(infile)-p);
 
           accum_csize:=0; accum_usize:=0;   {* set accumulators to 0 *}

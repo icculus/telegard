@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L-,N-,O-,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L-,N-,O-,R-,S+,V-}
 unit common;
 
 interface
@@ -745,12 +745,21 @@ begin
 end;
 
 function timer:real;
+ {rcg11242000 not needed.}
+{
 var r:registers;
     h,m,s,t:real;
+}
+var h,m,s,t:word;
 begin
+{
   r.ax:=44*256;
   msdos(dos.registers(r));
   h:=(r.cx div 256); m:=(r.cx mod 256); s:=(r.dx div 256); t:=(r.dx mod 256);
+  timer:=h*3600+m*60+s+t/100;
+}
+  {rcg11242000 linux/freepascal implementation.}
+  GetTime(h,m,s,t);
   timer:=h*3600+m*60+s+t/100;
 end;
 
@@ -937,7 +946,11 @@ begin
                     pr('');
                     if (not ulfo) then close(ulf);
                   end;
-              'r':sendfilep(start_dir+'\err.log');
+
+              {rcg11242000 DOSism}
+              {'r':sendfilep(start_dir+'\err.log');}
+              'r':sendfilep(start_dir+'/err.log');
+
               't':begin
                     pr('');
                     assign(tf,systat.gfilepath+'gfiles.dat');
@@ -1032,7 +1045,7 @@ begin
 end;
 
 function sysop1:boolean;
-{rcg11172000 ?!}
+{rcg11172000 $0000:$0417 contains value of scroll lock key.}
 {
 var a:byte absolute $0000:$0417;
 begin
@@ -1155,6 +1168,10 @@ function ageuser(bday:string):integer;
 var i:integer;
 begin
   i:=value(copy(date,7,2))-value(copy(bday,7,2));
+
+  {rcg11242000 Y2K hack.}
+  i := i + 100;
+
   if (daynum(copy(bday,1,6)+copy(date,7,2))>daynum(date)) then dec(i);
   ageuser:=i;
 end;
@@ -1383,8 +1400,12 @@ end;
 
 function exdrv(s:string):byte;
 begin
+  {rcg11242000 point at root drive always. Ugh.}
+  {
   s:=fexpand(s);
   exdrv:=ord(s[1])-64;
+  }
+  exdrv:=3;
 end;
 
 function mlnnomci(s:string; l:integer):string;

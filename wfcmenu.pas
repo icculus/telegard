@@ -6,7 +6,7 @@
 (*>  various status reports, and log on locally.                            <*)
 (*>                                                                         <*)
 (*****************************************************************************)
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 unit wfcmenu;
 
 interface

@@ -1,4 +1,4 @@
-{$A+,B+,D-,E+,F+,I+,L-,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L-,N-,O+,R-,S+,V-}
 unit archive3;
 
 interface
@@ -53,7 +53,12 @@ begin
               close(fi);
             end;
             shel1;
-            execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'1\',
+            {rcg11242000 DOSism}
+            {
+	    execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'1\',
+                      rezipcmd+' '+sqoutsp(fn),-1);
+            }
+            execbatch(ok,TRUE,'tgtemp1.bat','tgtest1.$$$',systat.temppath+'1/',
                       rezipcmd+' '+sqoutsp(fn),-1);
             shel2;
             assign(fi,sqoutsp(fn));
@@ -67,7 +72,9 @@ begin
           end else begin
             ok:=TRUE;
             s:=fn;
-            conva(ok,atype,atype,systat.temppath+'1\',sqoutsp(fn),sqoutsp(s));
+            {rcg11242000 DOSism}
+            {conva(ok,atype,atype,systat.temppath+'1\',sqoutsp(fn),sqoutsp(s));}
+            conva(ok,atype,atype,systat.temppath+'1/',sqoutsp(fn),sqoutsp(s));
             if (ok) then begin
               fsplit(fn,ps,ns,es); fn:=ps+ns+'.#$%';
               assign(fi,sqoutsp(fn));

@@ -11,7 +11,7 @@
  *       written by Eric Oman, and Martin Pollard.                           *
  *                                                                           *
  *****************************************************************************}
-{$A+,B+,D-,E+,F+,I+,L-,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L-,N-,O+,R-,S+,V-}
 {$M 60000,0,45000}      { Memory Allocation Sizes }
 
 Program BBS;
@@ -225,7 +225,6 @@ Begin
     ovrinitems; if (ovrresult=ovrok) then overlayinems:=TRUE;
   end;
   ovrsetbuf(ovrmaxsize); ovrsetretry(ovrmaxsize div 2);
-  }
 
   initexecswap2:=initexecswap;
   execwithswap2:=execwithswap;
@@ -233,6 +232,7 @@ Begin
 
   findvertypeout(ovrpath,vercs,vertype,vertypes,serialnumber,licenseinfo,sitedatetime);
   ver:=ver+' '+vertype;
+  }
 
   init;
 

@@ -41,7 +41,7 @@ uses
                to allow redirection of I/O *}
 
 
-{$A+,B+,D-,E+,F+,I+,L+,N-,O+,R-,S+,V-}
+{$A+,B+,E+,F+,I+,L+,N-,O+,R-,S+,V-}
 {$I ifl.inc}
 
 const
