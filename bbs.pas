@@ -328,5 +328,7 @@ Begin
 
   textcolor(7); clrscr; textcolor(14);
   WriteLn('[> Exited with ErrorLevel ',elevel,' at '+date+' '+time);
+  {rcg11182000 added NormVideo()...}
+  NormVideo();
   halt(elevel);
 end.
