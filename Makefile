@@ -24,8 +24,21 @@ PPC386=ppc386
 #---------------------------------------------------------------------------
 # don't touch anything below this line.
 
-# This is the name of the produced binary. "bbs" should suffice.
+# This are the names of the produced binaries.
 MAINEXE=bbs
+MINITERMEXE=miniterm
+INITEXE=init
+TPAGEEXE=tpage
+IFLEXE=ifl
+FINDITEXE=findit
+T2TEXE=t2t
+OBLITEXE=oblit
+MTESTEXE=mtest
+BBEXE=bb
+CBBSEXE=cbbs
+MABSEXE=mabs
+COCONFIGEXE=coconfig
+SPDATEEXE=spdate
 
 ifeq ($(strip $(verbose)),true)
     PPC386FLAGS += -vwnh
@@ -44,6 +57,8 @@ else
     PPC386FLAGS += -Xs   # strip the binary.
     PPC386FLAGS += -O2   # Level 2 optimizations.
     PPC386FLAGS += -OG   # Optimize for speed, not size.
+    PPC386FLAGS += -XD   # Dynamic linkage.
+    PPC386FLAGS += -CX   # Smartlink the binary, removing unused code.
 
     ifeq ($(strip $(cpu)),386)
         PPC386FLAGS += -OP1
@@ -59,7 +74,13 @@ else
 endif
 
 # Borland TP7.0 compatibility flag.
+PPC386FLAGS += -B
+
+# Borland TP7.0 compatibility flag.
 PPC386FLAGS += -So
+
+# Allow LABEL and GOTO. STRIVE TO REMOVE THIS COMMAND LINE PARAMETER!
+PPC386FLAGS += -Sg
 
 # Support C-style macros.
 #PPC386FLAGS += -Sm
@@ -67,17 +88,11 @@ PPC386FLAGS += -So
 # Assembly statements are Intel-like (instead of AT&T-like).
 PPC386FLAGS += -Rintel
 
-# Dynamic linkage.
-PPC386FLAGS += -XD
-
 # Output target Linux.  !!! FIXME: Want win32 compiles?
 PPC386FLAGS += -TLINUX
 
-# Smartlink the binary, removing unused code.
-PPC386FLAGS += -CX
-
 # Pipe output to assembler, rather than to temp file. This is a little faster.
-PPC386FLAGS += -P
+#PPC386FLAGS += -P
 
 # Write bins to this directory...
 PPC386FLAGS += -FE$(BUILDDIR)
@@ -85,18 +100,58 @@ PPC386FLAGS += -FE$(BUILDDIR)
 #---------------------------------------------------------------------------
 # Build rules...don't touch this, either.
 
-include sources
-
-OBJSx := $(SRCS:.pas=.o)
-OBJS := $(foreach feh,$(OBJSx),$(BUILDDIR)/$(feh))
+#include sources
+#OBJSx := $(SRCS:.pas=.o)
+#OBJS := $(foreach feh,$(OBJSx),$(BUILDDIR)/$(feh))
 
 $(BUILDDIR)/%.o : %.pas
 	$(PPC386) $(PPC386FLAGS) $<
 
-all: $(MAINEXE)
+all: $(BUILDDIR) $(MAINEXE) $(MINITERMEXE) $(INITEXE) $(TPAGEEXE) $(IFLEXE) \
+     $(FINDITEXE) $(T2TEXE) $(OBLITEXE) $(MTESTEXE) $(BBEXE) $(CBBSEXE) \
+     $(MABSEXE) $(COCONFIGEXE) $(SPDATEEXE)
 
 $(MAINEXE) : $(BUILDDIR) $(OBJS) bbs.pas
 	$(PPC386) $(PPC386FLAGS) bbs.pas
+
+$(MINITERMEXE) : $(BUILDDIR) $(OBJS) miniterm.pas
+	$(PPC386) $(PPC386FLAGS) miniterm.pas
+
+$(INITEXE) : $(BUILDDIR) $(OBJS) init.pas
+	$(PPC386) $(PPC386FLAGS) init.pas
+
+$(TPAGEEXE) : $(BUILDDIR) $(OBJS) tpage.pas
+	$(PPC386) $(PPC386FLAGS) tpage.pas
+
+$(IFLEXE) : $(BUILDDIR) $(OBJS) ifl.pas
+	$(PPC386) $(PPC386FLAGS) ifl.pas
+
+$(FINDITEXE) : $(BUILDDIR) $(OBJS) findit.pas
+	$(PPC386) $(PPC386FLAGS) findit.pas
+
+$(T2TEXE) : $(BUILDDIR) $(OBJS) t2t.pas
+	$(PPC386) $(PPC386FLAGS) t2t.pas
+
+$(OBLITEXE) : $(BUILDDIR) $(OBJS) t2t.pas
+	$(PPC386) $(PPC386FLAGS) t2t.pas
+
+$(MTESTEXE) : $(BUILDDIR) $(OBJS) mtest.pas
+	$(PPC386) $(PPC386FLAGS) mtest.pas
+
+$(BBEXE) : $(BUILDDIR) $(OBJS) bb.pas
+	$(PPC386) $(PPC386FLAGS) bb.pas
+
+$(CBBSEXE) : $(BUILDDIR) $(OBJS) cbbs.pas
+	$(PPC386) $(PPC386FLAGS) cbbs.pas
+
+$(MABSEXE) : $(BUILDDIR) $(OBJS) mabs.pas
+	$(PPC386) $(PPC386FLAGS) mabs.pas
+
+$(COCONFIGEXE) : $(BUILDDIR) $(OBJS) coconfig.pas
+	$(PPC386) $(PPC386FLAGS) coconfig.pas
+
+$(SPDATEEXE) : $(BUILDDIR) $(OBJS) spdate.pas
+	$(PPC386) $(PPC386FLAGS) spdate.pas
 
 $(BUILDDIR): $(cpu)
 	mkdir $(BUILDDIR)
