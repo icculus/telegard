@@ -535,7 +535,8 @@ begin
     dd(abort,next,'Archive format ....... :','"'+s+'"',(arctype<>0));
     if (fso) then begin
       nl;
-      dd(abort,next,'Filename ...... :','"'+filename+'.DIR"',TRUE);
+      {rcg11182000 lowercased this ".DIR" strings...}
+      dd(abort,next,'Filename ...... :','"'+filename+'.dir"',TRUE);
       dd(abort,next,'DL file path .. :','"'+dlpath+'"',TRUE);
     end;
   end;

@@ -401,6 +401,7 @@ var u:userrec;
   begin
     if ((modemr.init<>'') and (answerbaud=0) and (not localioonly)) then begin
       gotoxy(1,24); tc(12); clreol; write('Initializing modem...');
+
       if (not keypressed) then begin
         c:=#0; s:=''; done:=FALSE; try:=0;
         rl:=timer;
@@ -426,7 +427,7 @@ var u:userrec;
           if (try>10) then done:=TRUE;
         until ((done) or (keypressed));
       end;
-      while (keypressed) do isc:=readkey;
+      while (keypressed) do begin isc:=readkey; writeln(ord(isc)); end;
       delay(100); com_flush_rx;
       rl1:=timer; repeat c:=ccinkey1 until (abs(timer-rl1)>0.1);
 

@@ -155,10 +155,11 @@ begin
   else
     ulffopen1:=FALSE;
   loaduboard(fileboard);
+  {rcg11182000 lowercased these ".DIR" strings...}
   if (fbdirdlpath in memuboard.fbstat) then
-    assign(ulff,memuboard.dlpath+memuboard.filename+'.DIR')
+    assign(ulff,memuboard.dlpath+memuboard.filename+'.dir')
   else
-    assign(ulff,systat.gfilepath+memuboard.filename+'.DIR');
+    assign(ulff,systat.gfilepath+memuboard.filename+'.dir');
   {$I-} reset(ulff); {$I+}
   if (ioresult<>0) then begin
     rewrite(ulff);

@@ -14,7 +14,7 @@ cpu=686
 debug=true
 
 # want to see more verbose compiles? Set this to "true".
-verbose=true
+verbose=false
 
 # You probably don't need to touch this one. This is the location of
 #  your copy of PPC386, if it's not in the path.
@@ -24,22 +24,6 @@ PPC386=ppc386
 #---------------------------------------------------------------------------
 # don't touch anything below this line.
 
-# This are the names of the produced binaries.
-MAINEXE=bbs
-MINITERMEXE=miniterm
-INITEXE=init
-TPAGEEXE=tpage
-IFLEXE=ifl
-FINDITEXE=findit
-T2TEXE=t2t
-OBLITEXE=oblit
-MTESTEXE=mtest
-BBEXE=bb
-CBBSEXE=cbbs
-MABSEXE=mabs
-COCONFIGEXE=coconfig
-SPDATEEXE=spdate
-
 ifeq ($(strip $(verbose)),true)
     PPC386FLAGS += -vwnh
 endif
@@ -47,11 +31,11 @@ endif
 ifeq ($(strip $(debug)),true)
     BUILDDIR := $(cpu)/Debug
     PPC386FLAGS += -g    # include debug symbols.
-    PPC386FLAGS += -gc   # generate checks for pointers.
-    PPC386FLAGS += -Ct   # generate stack-checking code.
-    PPC386FLAGS += -Cr   # generate range-checking code.
-    PPC386FLAGS += -Co   # generate overflow-checking code.
-    PPC386FLAGS += -Ci   # generate I/O-checking code.
+    #PPC386FLAGS += -gc   # generate checks for pointers.
+    #PPC386FLAGS += -Ct   # generate stack-checking code.
+    #PPC386FLAGS += -Cr   # generate range-checking code.
+    #PPC386FLAGS += -Co   # generate overflow-checking code.
+    #PPC386FLAGS += -Ci   # generate I/O-checking code.
 else
     BUILDDIR := $(cpu)/Release
     PPC386FLAGS += -Xs   # strip the binary.
@@ -73,7 +57,7 @@ else
     endif
 endif
 
-# Borland TP7.0 compatibility flag.
+# Rebuild all units needed.
 PPC386FLAGS += -B
 
 # Borland TP7.0 compatibility flag.
@@ -86,16 +70,32 @@ PPC386FLAGS += -Sg
 #PPC386FLAGS += -Sm
 
 # Assembly statements are Intel-like (instead of AT&T-like).
-PPC386FLAGS += -Rintel
+#PPC386FLAGS += -Rintel
 
 # Output target Linux.  !!! FIXME: Want win32 compiles?
-PPC386FLAGS += -TLINUX
+#PPC386FLAGS += -TLINUX
 
 # Pipe output to assembler, rather than to temp file. This is a little faster.
 #PPC386FLAGS += -P
 
 # Write bins to this directory...
 PPC386FLAGS += -FE$(BUILDDIR)
+
+# This are the names of the produced binaries.
+MAINEXE=$(BUILDDIR)/bbs
+MINITERMEXE=$(BUILDDIR)/miniterm
+INITEXE=$(BUILDDIR)/init
+TPAGEEXE=$(BUILDDIR)/tpage
+IFLEXE=$(BUILDDIR)/ifl
+FINDITEXE=$(BUILDDIR)/findit
+T2TEXE=$(BUILDDIR)/t2t
+OBLITEXE=$(BUILDDIR)/oblit
+MTESTEXE=$(BUILDDIR)/mtest
+BBEXE=$(BUILDDIR)/bb
+CBBSEXE=$(BUILDDIR)/cbbs
+MABSEXE=$(BUILDDIR)/mabs
+COCONFIGEXE=$(BUILDDIR)/coconfig
+SPDATEEXE=$(BUILDDIR)/spdate
 
 #---------------------------------------------------------------------------
 # Build rules...don't touch this, either.
@@ -108,49 +108,49 @@ $(BUILDDIR)/%.o : %.pas
 	$(PPC386) $(PPC386FLAGS) $<
 
 all: $(BUILDDIR) $(MAINEXE) $(MINITERMEXE) $(INITEXE) $(TPAGEEXE) $(IFLEXE) \
-     $(FINDITEXE) $(T2TEXE) $(OBLITEXE) $(MTESTEXE) $(BBEXE) $(CBBSEXE) \
-     $(MABSEXE) $(COCONFIGEXE) $(SPDATEEXE)
+     $(FINDITEXE) $(OBLITEXE) $(MTESTEXE) $(BBEXE) $(CBBSEXE) \
+     $(MABSEXE) $(COCONFIGEXE) $(SPDATEEXE) $(T2TEXE)
 
-$(MAINEXE) : $(BUILDDIR) $(OBJS) bbs.pas
+$(MAINEXE) : $(BUILDDIR) bbs.pas
 	$(PPC386) $(PPC386FLAGS) bbs.pas
 
-$(MINITERMEXE) : $(BUILDDIR) $(OBJS) miniterm.pas
+$(MINITERMEXE) : $(BUILDDIR) miniterm.pas
 	$(PPC386) $(PPC386FLAGS) miniterm.pas
 
-$(INITEXE) : $(BUILDDIR) $(OBJS) init.pas
+$(INITEXE) : $(BUILDDIR) init.pas
 	$(PPC386) $(PPC386FLAGS) init.pas
 
-$(TPAGEEXE) : $(BUILDDIR) $(OBJS) tpage.pas
+$(TPAGEEXE) : $(BUILDDIR) tpage.pas
 	$(PPC386) $(PPC386FLAGS) tpage.pas
 
-$(IFLEXE) : $(BUILDDIR) $(OBJS) ifl.pas
+$(IFLEXE) : $(BUILDDIR) ifl.pas
 	$(PPC386) $(PPC386FLAGS) ifl.pas
 
-$(FINDITEXE) : $(BUILDDIR) $(OBJS) findit.pas
+$(FINDITEXE) : $(BUILDDIR) findit.pas
 	$(PPC386) $(PPC386FLAGS) findit.pas
 
-$(T2TEXE) : $(BUILDDIR) $(OBJS) t2t.pas
+$(T2TEXE) : $(BUILDDIR) t2t.pas
 	$(PPC386) $(PPC386FLAGS) t2t.pas
 
-$(OBLITEXE) : $(BUILDDIR) $(OBJS) t2t.pas
-	$(PPC386) $(PPC386FLAGS) t2t.pas
+$(OBLITEXE) : $(BUILDDIR) oblit.pas
+	$(PPC386) $(PPC386FLAGS) oblit.pas
 
-$(MTESTEXE) : $(BUILDDIR) $(OBJS) mtest.pas
+$(MTESTEXE) : $(BUILDDIR) mtest.pas
 	$(PPC386) $(PPC386FLAGS) mtest.pas
 
-$(BBEXE) : $(BUILDDIR) $(OBJS) bb.pas
+$(BBEXE) : $(BUILDDIR) bb.pas
 	$(PPC386) $(PPC386FLAGS) bb.pas
 
-$(CBBSEXE) : $(BUILDDIR) $(OBJS) cbbs.pas
+$(CBBSEXE) : $(BUILDDIR) cbbs.pas
 	$(PPC386) $(PPC386FLAGS) cbbs.pas
 
-$(MABSEXE) : $(BUILDDIR) $(OBJS) mabs.pas
+$(MABSEXE) : $(BUILDDIR) mabs.pas
 	$(PPC386) $(PPC386FLAGS) mabs.pas
 
-$(COCONFIGEXE) : $(BUILDDIR) $(OBJS) coconfig.pas
+$(COCONFIGEXE) : $(BUILDDIR) coconfig.pas
 	$(PPC386) $(PPC386FLAGS) coconfig.pas
 
-$(SPDATEEXE) : $(BUILDDIR) $(OBJS) spdate.pas
+$(SPDATEEXE) : $(BUILDDIR) spdate.pas
 	$(PPC386) $(PPC386FLAGS) spdate.pas
 
 $(BUILDDIR): $(cpu)

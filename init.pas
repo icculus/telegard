@@ -109,8 +109,12 @@ end;
 
 function exdrv(s:astr):byte;
 begin
+  {rcg11172000 always 'C' under Linux...}
+  {
   s:=fexpand(s);
   exdrv:=ord(s[1])-64;
+  }
+  exdrv := 3;
 end;
 
 function leapyear(yr:integer):boolean;
@@ -152,7 +156,14 @@ begin
   t:=0;
   m:=value(copy(dt,1,2));
   d:=value(copy(dt,4,2));
+
+  {rcg11182000 hahahaha...a Y2K bug.  :) }
   y:=value(copy(dt,7,2))+1900;
+
+  {rcg11182000 added this conditional. }
+  if (y < 1977) then  { Ugh...this is so bad. }
+    y := y + 100;
+
   for c:=1985 to y-1 do
     if (leapyear(c)) then inc(t,366) else inc(t,365);
   t:=t+daycount(m,y)+(d-1);
@@ -227,6 +238,9 @@ begin
   assign(src,srcname);
   {$I-} reset(src,1); {$I+}
   if (ioresult<>0) then begin ok:=FALSE; exit; end;
+
+  {rcg11172000 why bother checking total disk space in a modern OS?}
+  {
   dfs:=freek(exdrv(destname));
   fs:=trunc(filesize(src)/1024.0)+1;
   if (fs>=dfs) then begin
@@ -234,6 +248,8 @@ begin
     nospace:=TRUE; ok:=FALSE;
     exit;
   end else begin
+  }
+
     assign(dest,destname);
     {$I-} rewrite(dest,1); {$I+}
     if (ioresult<>0) then begin ok:=FALSE; exit; end;
@@ -244,7 +260,9 @@ begin
     close(dest); close(src);
     dodate;
     erase(src);
-  end;
+
+  {rcg11172000 why bother checking total disk space in a modern OS?}
+  {end;}
 end;
 
 procedure ffile(fn:string);
@@ -287,7 +305,9 @@ end;
 
 function make_path(s:string):boolean;
 begin
-  while (copy(s,length(s),1)='\') do s:=copy(s,1,length(s)-1);
+  {rcg11182000 dosism.}
+  {while (copy(s,length(s),1)='\') do s:=copy(s,1,length(s)-1);}
+  while (copy(s,length(s),1)='/') do s:=copy(s,1,length(s)-1);
   make_path:=TRUE;
   {$I-} mkdir(fexpand(s)); {$I+}
   if (ioresult<>0) then begin
@@ -300,19 +320,30 @@ end;
 procedure make_paths;
 var s:string;
 begin
-  for i:=1 to 7 do begin
-    while copy(path[i],length(path[i]),1)='\' do
+
+  {rcg11182000 1 to 7? Swap path is excluded...}
+  {for i:=1 to 7 do begin}
+
+  for i:=1 to 8 do begin
+    {rcg11182000 dosism.}
+    {while copy(path[i],length(path[i]),1)='\' do}
+    while copy(path[i],length(path[i]),1)='/' do
       path[i]:=copy(path[i],1,length(path[i])-1);
     case i of 1:s:='GFILES'; 2:s:='MSGS'; 3:s:='MENUS'; 4:s:='TFILES';
               5:s:='AFILES'; 6:s:='TRAP'; 7:s:='TEMP'; 8:s:='SWAP'; end;
     star(s+' path ("'+fexpand(path[i])+'")');
     if (not make_path(path[i])) then halt(1);
-    path[i]:=path[i]+'\';
+    {rcg11182000 dosism.}
+    {path[i]:=path[i]+'\';}
+    path[i]:=path[i]+'/';
   end;
 (*  star('Creating EMAIL and GENERAL message paths');
   if (not make_path(path[2]+'EMAIL\')) then halt(1);
   if (not make_path(path[2]+'GENERAL\')) then halt(1);*)
   star('Creating SYSOP and MISC file paths');
+
+  {rcg11182000 dosisms.}
+  {
   if (not make_path('DLS\')) then halt(1);
   if (not make_path('DLS\SYSOP')) then halt(1);
   if (not make_path('DLS\MISC')) then halt(1);
@@ -320,6 +351,14 @@ begin
   if (not make_path(path[7]+'1\')) then halt(1);
   if (not make_path(path[7]+'2\')) then halt(1);
   if (not make_path(path[7]+'3\')) then halt(1);
+  }
+  if (not make_path('DLS/')) then halt(1);
+  if (not make_path('DLS/SYSOP')) then halt(1);
+  if (not make_path('DLS/MISC')) then halt(1);
+  star('Creating TEMP 1, 2, and 3 file paths');
+  if (not make_path(path[7]+'1/')) then halt(1);
+  if (not make_path(path[7]+'2/')) then halt(1);
+  if (not make_path(path[7]+'3/')) then halt(1);
 end;
 
 procedure make_status_dat;
@@ -557,6 +596,7 @@ begin
     swappath:=path[8];
     for i:=1 to 119 do res[i]:=0;
   end;
+
   assign(systatf,'status.dat');
   rewrite(systatf); write(systatf,systat); close(systatf);
 end;
@@ -810,7 +850,9 @@ begin
   with ufr do begin
     name:='SysOp directory';
     filename:='SYSOP';
-    dlpath:=curdir+'\DLS\SYSOP\';
+    {rcg11182000 dosisms}
+    {dlpath:=curdir+'\DLS\SYSOP\';}
+    dlpath:=curdir+'/DLS/SYSOP/';
     ulpath:=dlpath;
     maxfiles:=2000;
     password:='';
@@ -828,7 +870,9 @@ begin
   with ufr do begin
     name:='Miscellaneous';
     filename:='MISC';
-    dlpath:=curdir+'\DLS\MISC\';
+    {rcg11182000 dosisms}
+    {dlpath:=curdir+'\DLS\MISC\';}
+    dlpath:=curdir+'/DLS/MISC/';
     ulpath:=dlpath;
     maxfiles:=2000;
     password:='';
@@ -883,8 +927,6 @@ procedure savemhead1(var brdf:file; mhead:mheaderrec);
   end;
 
 begin
-{rcg11172000 this is fooked.}
-{
   with mhead do begin
     blockwrite(brdf,signature,4);
     blockwrite(brdf,msgptr,4);
@@ -895,9 +937,6 @@ begin
     outftinfo(toi);
     blockwritestr(brdf,originsite);
   end;
-}
-
-   writeln('STUB: init.pas; savemhead1()...');
 end;
 
 procedure make_email_brd;
@@ -945,12 +984,8 @@ begin
     for i:=1 to 6 do msgdate[i]:=pdt[i];
     msgdowk:=0;
 
-    {rcg11172000 fooked.}
-    {
     for i:=1 to 6 do lastdate[i]:=pdt[i];
     lastdowk:=0;
-    }
-    writeln('STUB: init.pas; make_email_brd()...');
 
     isreplyto:=65535;
     numreplys:=0;
@@ -961,12 +996,8 @@ begin
   with mheader do begin
     signature:=$ABCD0123;
     msgptr:=4;
-    {rcg11172000 fooked.}
-    {
     for i:=1 to 6 do isreplyto_iddate[i]:=0;
     isreplyto_idrand:=0;
-    }
-    writeln('STUB: init.pas; make_email_brd()...');
     title:='Greetings, new Telegard SysOp!!';
     with fromi do begin
       anon:=0;
@@ -983,10 +1014,7 @@ begin
       alias:='SysOp';
     end;
 
-    {rcg11172000 fooked.}
-    {originsite:='';}
-    writeln('STUB: init.pas; make_email_brd()...');
-
+    originsite:='';
   end;
   savemhead1(brdf,mheader);
   close(brdf);
@@ -1124,17 +1152,14 @@ begin
   mixr.hdrptr:=0; for i:=0 to 99 do blockwrite(mixf,mixr,1);
   close(mixf);
 
-  {rcg11172000 fooked.}
-  {
   assign(tref,s+'.tre'); rewrite(tref,sizeof(mtreerec)); close(tref);
-  }
-  writeln('STUB: init.pas; make_mboard()...');
 end;
 
 procedure make_fboard(s:string);
 begin
   ulffr.blocks:=0;
-  assign(ulff,s+'.DIR');
+  {rcg11182000 lowercased this ".DIR" strings...}
+  assign(ulff,s+'.dir');
   rewrite(ulff); write(ulff,ulffr); close(ulff);
 end;
 
@@ -1182,7 +1207,8 @@ begin
   movefile1('verbose.dat',path[1]);
   movefile1('voting.dat',path[1]);
   movefile1('zlog.dat',path[1]);
-  movefiles('*.DIR',path[1]);
+  {rcg11182000 lowercased this ".DIR" string...}
+  movefiles('*.dir',path[1]);
 
   ttl('Moving message files into MSGS directory');
   movefile1('email.brd',path[2]);
@@ -1191,21 +1217,23 @@ begin
   movefile1('general.mix',path[2]);
   movefile1('general.tre',path[2]);
 
+  {rcg11182000 Made ANS MSG CFG and MNU lowercase...}
+
   ttl('Moving ANSI text files into AFILES directory');
-  movefiles('*.ANS',path[5]);
+  movefiles('*.ans',path[5]);
 
   ttl('Moving normal text files into AFILES directory');
-  movefiles('*.MSG',path[5]);
+  movefiles('*.msg',path[5]);
   movefile1('computer.txt',path[5]);
 
   ttl('Moving color configuration files into AFILES directory');
-  movefiles('*.CFG',path[5]);
+  movefiles('*.cfg',path[5]);
 
 (*  ttl('Moving message file into MSGS\EMAIL directory');
   movefile1('a-32767.1',path[2]+'EMAIL\');*)
 
   ttl('Moving menu files into MENUS directory');
-  movefiles('*.MNU',path[3]);
+  movefiles('*.mnu',path[3]);
 end;
 
 begin
@@ -1234,6 +1262,8 @@ begin
   end;
 
   getdir(0,curdir);
+  {rcg11182000 dosisms.}
+  {
   path[1]:=curdir+'\GFILES\';
   path[2]:=curdir+'\MSGS\';
   path[3]:=curdir+'\MENUS\';
@@ -1242,6 +1272,15 @@ begin
   path[6]:=curdir+'\TRAP\';
   path[7]:=curdir+'\TEMP\';
   path[8]:=curdir+'\SWAP\';
+  }
+  path[1]:=curdir+'/GFILES/';
+  path[2]:=curdir+'/MSGS/';
+  path[3]:=curdir+'/MENUS/';
+  path[4]:=curdir+'/TFILES/';
+  path[5]:=curdir+'/AFILES/';
+  path[6]:=curdir+'/TRAP/';
+  path[7]:=curdir+'/TEMP/';
+  path[8]:=curdir+'/SWAP/';
 
   textcolor(14);
   writeln;
@@ -1306,6 +1345,11 @@ begin
 
   writeln;
   star('Telegard BBS installed and initialized successfully!');
-  star('This program, "INIT.EXE", can now be deleted.');
+  {rcg11172000 DOSism.}
+  {star('This program, "INIT.EXE", can now be deleted.');}
+  star('This program, "init", can now be deleted.');
   star('Thanks for trying Telegard!');
+
+  {rcg11182000 added NormVideo.}
+  NormVideo;
 end.

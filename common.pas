@@ -1205,7 +1205,14 @@ begin
   t:=0;
   m:=value(copy(dt,1,2));
   d:=value(copy(dt,4,2));
+
+  {rcg11182000 hahahaha...a Y2K bug.  :) }
   y:=value(copy(dt,7,2))+1900;
+
+  {rcg11182000 added this conditional. }
+  if (y < 1977) then  { Ugh...this is so bad. }
+    y := y + 100;
+
   for c:=1985 to y-1 do
     if (leapyear(c)) then inc(t,366) else inc(t,365);
   t:=t+daycount(m,y)+(d-1);
@@ -2725,15 +2732,20 @@ var s:string;
     i,j:integer;
     abort,next:boolean;
 begin
-  fn:=allcaps(fn); s:=fn;
-  if (copy(fn,length(fn)-3,4)='.ANS') then begin
-    if (exist(copy(fn,1,length(fn)-4)+'.AN1')) then
+  {rcg11182000 moved this allcaps into the first IF, for case-sensitive fs.}
+  {fn:=allcaps(fn); s:=fn;}
+  {if (copy(fn,length(fn)-3,4)='.ANS') then begin}
+
+  {rcg11182000 lowercased rest of extentions.}
+  s:=fn;
+  if (allcaps(copy(fn,length(fn)-3,4))='.ANS') then begin
+    if (exist(copy(fn,1,length(fn)-4)+'.an1')) then
       repeat
         i:=random(10);
         if (i=0) then
-          fn:=copy(fn,1,length(fn)-4)+'.ANS'
+          fn:=copy(fn,1,length(fn)-4)+'.ans'
         else
-          fn:=copy(fn,1,length(fn)-4)+'.AN'+cstr(i);
+          fn:=copy(fn,1,length(fn)-4)+'.an'+cstr(i);
       until (exist(fn));
 
     getdate(year,month,day,dayofweek);
@@ -2750,7 +2762,9 @@ begin
   nofile:=TRUE;
   fn:=sqoutsp(fn);
   if (fn='') then exit;
-  if (pos('\',fn)<>0) then j:=1
+  {rcg11182000 dosism.}
+  {if (pos('\',fn)<>0) then j:=1}
+  if (pos('/',fn)<>0) then j:=1
   else begin
     j:=2;
     fsplit(fexpand(fn),ps,ns,es);
@@ -2759,7 +2773,9 @@ begin
   end;
   for i:=1 to j do begin
     ffn:=fn;
-    if ((pos('\',fn)=0) and (pos(':',fn)=0)) then
+    {rcg11182000 dosism.}
+    {if ((pos('\',fn)=0) and (pos(':',fn)=0)) then}
+    if ((pos('/',fn)=0) and (pos(':',fn)=0)) then
       case i of
         1:ffn:=systat.afilepath+ffn;
         2:ffn:=systat.gfilepath+ffn;

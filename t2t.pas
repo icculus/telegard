@@ -143,7 +143,14 @@ begin
   t:=0;
   m:=value(copy(dt,1,2));
   d:=value(copy(dt,4,2));
+
+  {rcg11182000 hahahaha...a Y2K bug.  :) }
   y:=value(copy(dt,7,2))+1900;
+
+  {rcg11182000 added this conditional. }
+  if (y < 1977) then  { Ugh...this is so bad. }
+    y := y + 100;
+
   for c:=1985 to y-1 do
     if leapyear(c) then t:=t+366 else t:=t+365;
   t:=t+daycount(m,y)+(d-1);
@@ -664,15 +671,17 @@ begin
           end;
           seek(tag_ulf,i); write(tag_ulf,tag_ub);
 
+          {rcg11182000 lowercased this ".DIR" string...}
           with ub do
-            assign(ulff,tgpath+filename+'.DIR');
+            assign(ulff,tgpath+filename+'.dir');
 
           {$I-} reset(ulff); {$I+}
           if (ioresult=0) then begin
             seek(ulff,0); read(ulff,ulffr);
             siz:=ulffr.blocks;
             if (siz>filesize(ulff)-1) then siz:=filesize(ulff)-1;
-            assign(tag_ulff,tag_ub.dlpath+tag_ub.filename+'.DIR');
+              {rcg11182000 lowercased this ".DIR" string...}
+            assign(tag_ulff,tag_ub.dlpath+tag_ub.filename+'.dir');
             clreol;
             star('  (record #'+cstr(i)+' of '+cstr(filesize(ulf)-1)+
                  ') -- "'+ub.filename+'.dir"');
@@ -980,13 +989,15 @@ begin
             for j:=1 to 6 do ub.res[j]:=0;
           end;
           seek(ulf,i); write(ulf,ub);
+          {rcg11182000 lowercased this ".DIR" string...}
           with tag_ub do
-            assign(tag_ulff,dlpath+filename+'.DIR');
+            assign(tag_ulff,dlpath+filename+'.dir');
 
           {$I-} reset(tag_ulff); {$I+}
           if (ioresult=0) then begin
             siz:=filesize(tag_ulff)-1;
-            assign(ulff,tgpath+tag_ub.filename+'.DIR');
+            {rcg11182000 lowercased this ".DIR" string...}
+            assign(ulff,tgpath+tag_ub.filename+'.dir');
             star('  (record #'+cstr(i)+' of '+cstr(filesize(tag_ulf)-1)+
                  ') -- "'+tag_ub.filename+'.dir"'); gotoxy(1,wherey-1);
             writeln;

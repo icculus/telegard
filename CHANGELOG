@@ -8,6 +8,24 @@
       the RTL changes to 1.0.2 ...
     * Updated Makefile to be more sane. Compiles just programs (not units),
       doesn't smartlink on debug builds, etc...
+    * Success in getting DOS->Unix path conversion in the RTL. Submitting
+      patch to FreePascal maintainers...
+    * Patches to init.pas to remove DOSification.
+    * Fixed (hah) Y2K bugs in multiple copies of daynum().
+    * Initial reaction from FreePascal maintainers is not good; started
+      converting DOSisms manually in the Telegard codebase...
+    * Why can't I get GDB to recognize debug symbols in most of my code? Grr.
+    * Removed remaining stubs from init.pas...this required hacking some
+      data structures...I'm not sure how this worked in the DOS version in this
+      state, but I'm pretty certain I've just destroyed compatibility. Oh well.
+      If the Y2K bug I found is any indication, no one's using the DOS version
+      anymore to be upset about this.
+    * Fixed init.pas bug in make_paths()...last dir (SWAP) was not created.
+    * No longer prints a caps() version of path in initp.pas's show_initfile().
+    * Added NormVideo() call to end of init.pas and bbs.pas...
+    * What the hell is "Project Coyote?" This is so clearly an ancient revision
+      of the source, that was probably half-hacked when I got it.
+    * More stubs, more filename lowercasing.
 
 2000-11-17  Ryan C. Gordon   <icculus@lokigames.com>
 

@@ -182,6 +182,7 @@ TYPE
     mimassmail,                   { is it private, mass mail? }
     miscanned);                   { is message scanned for FidoNet? }
 
+    {rcg11182000 spliced from V20 headers...}
   msgindexrec=                         { *.MIX : Message index records }
   record
     messagenum:word;                   { message number, tonum in EMAIL.MIX }
@@ -191,6 +192,8 @@ TYPE
     msgdate:cpackdatetime;             { message date/time (packed) }
     msgdowk:byte;                      { message day-of-week (0=Sun ...) }
     msgindexstat:set of msgindexstatr; { status flags }
+    lastdate:array[1..6] of byte;     { update: date/time }
+    lastdowk:byte;                    { update: day-of-week }
     isreplyto:word;                    { reply this message is to (-1=None) }
     numreplys:word;                    { number of replies to THIS message }
   end;
@@ -204,15 +207,19 @@ TYPE
     alias:string[36];          { user alias }
   end;
 
+  {rcg11182000 cannibalized from the v20 type...}
   mheaderrec=                  { *.BRD : Message header records }
   record
     signature:longint;         { header signature - $FFFFFFFF }
     msgptr:longint;            { pointer to message text }
+    isreplyto_iddate:array[1..6] of byte; { isreplyto id date - for NetMail }
+    isreplyto_idrand:word;            { isreplyto id randomid }
     msglength:longint;         { length of message text }
     fromi:fromtoinfo;          { from information }
     toi:fromtoinfo;            { to information }
     title:string[60];          { title of message }
     origindate:string[19];     { Echo/Group original msg date }
+    originsite:string[60];            { site of *original* origin }
   end;
 
   zlogrec=                        { ZLOG.DAT : System log }
@@ -711,4 +718,19 @@ TYPE
     addtear:boolean;                { add tear/origin lines? }
     res:array[1..1978] of byte;     { RESERVED }
   end;
+
+  {rcg11182000 added by me.}
+  V20_mtreerec=                       { *.TRE : Message reply-tree records }
+  record
+    messagerunning,                   { message number, running }
+    messagenum:word;                  { actual message number in *.MIX }
+    ilevel:byte;                      { indent level - for replys }
+    isreplyto,                        { reply this message is to (-1=None) }
+    numreplys:word;                   { number of replys to THIS message }
+    msgdate:array[1..6] of byte;      { message id date }
+    msgdowk:byte;                     { message day-of-week }
+  end;
+
+  mtreerec        = V20_mtreerec;           { *.TRE }
+  {rcg11182000 end adds.}
 

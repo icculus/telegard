@@ -193,7 +193,10 @@ var filv:text;
     gotoxy(6,11);
     if (copy(s,length(s),1)<>'!') then s:=systat.gfilepath+s
                                   else s:=copy(s,1,length(s)-1);
-    write(caps(s));
+
+    {rcg11182000 this caps call is confusing with a case-sensitive filesystem.}
+    {write(caps(s));}
+    write(s);
     textbackground(1);
     showmem;
     errs:=FALSE; npatch:=FALSE;
@@ -209,12 +212,17 @@ var filv:text;
   procedure wmsgs(s:astr);
   var x,y:integer;
   begin
+  {rcg1118 this doesn't work without savescreen() and such in common.pas...}
+  {
     x:=wherex; y:=wherey;
     if (not openedyet) then openwmsgs;
     textbackground(1); textcolor(15);
     window(8,16,73,22);
     gotoxy(sx,sy); writeln(s); sx:=wherex; sy:=wherey;
     window(1,1,80,25); gotoxy(x,y);
+  }
+
+        writeln('STUB: initp.pas; wmsgs(''' + s + ''')...');
   end;
 
   procedure inmsgs(sh:astr; var s:astr; len:integer);
@@ -232,7 +240,9 @@ var filv:text;
   function existdir(fn:astr):boolean;
   var srec:searchrec;
   begin
-    while (fn[length(fn)]='\') do fn:=copy(fn,1,length(fn)-1);
+    {rcg11182000 dosism.}
+    {while (fn[length(fn)]='\') do fn:=copy(fn,1,length(fn)-1);}
+    while (fn[length(fn)]='/') do fn:=copy(fn,1,length(fn)-1);
     findfirst(fexpand(sqoutsp(fn)),anyfile,srec);
     existdir:=(doserror=0) and (srec.attr and directory=directory);
   end;
@@ -276,7 +286,9 @@ var filv:text;
             if (s=s2) or (s2='') then abend('Illegal pathname error')
             else begin
               if (s2<>'') then
-                if (copy(s2,length(s2),1)<>'\') then s2:=s2+'\';
+                {rcg11182000 dosism}
+                {if (copy(s2,length(s2),1)<>'\') then s2:=s2+'\';}
+                if (copy(s2,length(s2),1)<>'/') then s2:=s2+'/';
               if (existdir(s2)) then
                 case i of
                   1:gfilepath:=s2;  2:msgpath:=s2;
@@ -327,8 +339,12 @@ begin
   end;
 *)
 
-  if (exist(start_dir+'\critical.err')) then begin
-    assign(filv,start_dir+'\critical.err'); erase(filv);
+  {rcg11182000 DOSism.}
+  {if (exist(start_dir+'\critical.err')) then begin      }
+  {  assign(filv,start_dir+'\critical.err'); erase(filv);}
+
+  if (exist(start_dir+'/critical.err')) then begin
+    assign(filv,start_dir+'/critical.err'); erase(filv);
     wmsgs('*** Critical error during last BBS execution! ***');
     wmsgs('[>>> Updating STATUS.DAT <<<]');
     inc(systat.todayzlog.criterr);

@@ -360,8 +360,10 @@ begin
     exit;
   end;
   disable_interrupts;
+}
   rx_chars:=0; rx_in:=1; rx_out:=1;
-  enable_interrupts;
+{
+enable_interrupts;
 }
 end;
 
@@ -377,8 +379,12 @@ begin
     exit;
   end;
   disable_interrupts;
+}
+
   tx_chars:=0; tx_in:=1; tx_out:=1;
-  enable_interrupts;
+
+{
+enable_interrupts;
 }
 end;
 

@@ -191,11 +191,12 @@ var i1,ii,culb,i2:integer;
 
   procedure getdirspec(var s:string);
   begin
+    {rcg11182000 lowercased these ".DIR" strings...}
     with memuboard do
       if (fbdirdlpath in fbstat) then
-        s:=fexpand(dlpath+filename+'.DIR')
+        s:=fexpand(dlpath+filename+'.dir')
       else
-        s:=fexpand(systat.gfilepath+filename+'.DIR');
+        s:=fexpand(systat.gfilepath+filename+'.dir');
   end;
 
   procedure dlbem;
@@ -537,7 +538,8 @@ NNN:File base name                     :Arc/Cmt-type:P-Index:Password
               readuboard:=-1; loaduboard(ii);
               if (fbdirdlpath in memuboard.fbstat) then s0:=memuboard.dlpath
                 else s0:=systat.gfilepath;
-              s0:=s0+memuboard.filename+'.DIR';
+              {rcg11182000 lowercased this ".DIR" string...}
+              s0:=s0+memuboard.filename+'.dir';
               nl; sprint('File base: '+#3#5+memuboard.name);
               if pynq('Delete this? ') then begin
                 sysoplog('* Deleted file base: '+memuboard.name);

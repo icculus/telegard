@@ -202,7 +202,14 @@ begin
   t:=0;
   m:=value(copy(dt,1,2));
   d:=value(copy(dt,4,2));
+
+  {rcg11182000 hahahaha...a Y2K bug.  :) }
   y:=value(copy(dt,7,2))+1900;
+
+  {rcg11182000 added this conditional. }
+  if (y < 1977) then  { Ugh...this is so bad. }
+    y := y + 100;
+
   for c:=1985 to y-1 do
     if leapyear(c) then t:=t+366 else t:=t+365;
   t:=t+daycount(m,y)+(d-1);
