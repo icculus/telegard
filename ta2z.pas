@@ -52,6 +52,9 @@ begin
   tch:=i;
 end;
 
+{rcg11272000 dunno if this is even used, but it won't fly under Linux.}
+{ below is a working implementation, Y2K fixes included.}
+{
 function date:astr;
 var reg:registers;
     m,d,y:string[4];
@@ -60,13 +63,46 @@ begin
   str(reg.dx shr 8,m);
   date:=tch(m)+'/'+tch(d)+'/'+tch(y);
 end;
+}
 
+function date:string;
+var
+    {rcg11272000 unused variable.}
+    {r:registers;}
+
+    {rcg11272000 Y2K-proofing.}
+    {y,m,d:string[3];}
+    m,d:string[3];
+    y:string[5];
+    yy,mm,dd,dow:word;
+
+begin
+  getdate(yy,mm,dd,dow);
+  {rcg11272000 Y2K-proofing.}
+  {str(yy-1900,y); str(mm,m); str(dd,d);}
+  str(yy,y); str(mm,m); str(dd,d);
+  date:=tch(m)+'/'+tch(d)+'/'+y;
+end;
+
+{rcg11272000 dunno if this is even used, but it won't fly under Linux.}
+{ below is a working implementation.}
+{
 function time:astr;
 var reg:registers;
     h,m,s:string[4];
 begin
   reg.ax:=$2c00; intr($21,Dos.Registers(reg));
   str(reg.cx shr 8,h); str(reg.cx mod 256,m); str(reg.dx shr 8,s);
+  time:=tch(h)+':'+tch(m)+':'+tch(s);
+end;
+}
+
+function time:string;
+var h,m,s:string[3];
+    hh,mm,ss,ss100:word;
+begin
+  gettime(hh,mm,ss,ss100);
+  str(hh,h); str(mm,m); str(ss,s);
   time:=tch(h)+':'+tch(m)+':'+tch(s);
 end;
 

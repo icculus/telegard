@@ -1,6 +1,15 @@
 - grep -i "DOS" *
-- rm sources ; cvs remove sources ; cvs commit -m "not needed" sources
-- cvs add TODO ; cvs commit -m "initial add." TODO
 - Look for calls to bslash() and isul().
 - Looks for DOSisms in ifl.pas.
+- Look at rec25.pas, and check for filename storage of only 8 bytes in the
+  various records. Make it a full 255-character string at least.
+- Looks like we've got some record clash. Hunt it out.
+- Mail crashes. Record problems?
+- ANSI code issues with write()
+- Savescreen(), etc.
+- wfc broken in xterm.
+- More y2k shit
+- modem/telnet support.
+
+// end of TODO ...
 

@@ -741,6 +741,29 @@ begin
       end;
     end;
 *)
+
+{
+    primary_sockh = Socket(AF_INET, SOCK_STREAM, PF_INET);
+    if (primary_sockh = -1) then
+    begin
+        writeln;
+        writeln('WHOA!  Socket() returned -1!');
+        writeln(' Aborting...');
+        halt(2);
+    end;
+
+    if (Bind(primary_sockh,
+
+    if (Listen(primary_sockh, 0) = FALSE) then
+    begin
+        writeln;
+        writeln('WHOA!  Socket() returned -1!');
+        writeln(' Aborting...');
+        halt(2);
+    end;
+}
+    
+
 end;
 
 
@@ -781,25 +804,22 @@ begin
     setintvec(intnum,old_vector);
   end;
 *)
+
+    {if (sockh <> -1) then Shutdown(sockh, 2);}
+
 end;
 
   { This procedure is called when the program exits for any reason.  It
     deinstalls the interrupt driver.}
 {$F+} procedure exit_procedure; {$F-}
 begin
-{rcg11172000 not needed under Linux.}
-{
   com_deinstall;
   exitproc:=exit_save;
-}
 end;
 
   { This installs the exit procedure. }
 begin
-{rcg11172000 not needed under Linux.}
-{
   exit_save:=exitproc;
   exitproc:=@exit_procedure;
-}
 end.
 

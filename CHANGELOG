@@ -1,3 +1,57 @@
+2000-12-17  Ryan C. Gordon   <icculus@lokigames.com>
+    * More CPU burnage: put a delay() call in the loop that prompts for
+      local login (yes, no, fast). This is starting to annoy me.
+    * Implemented sysop1() in common.pas ... since we can't check the value
+      of scroll lock, it now checks the existance of a file (GFILES/sysop.in).
+      An external program/script can set this, since we aren't in a single
+      tasked DOS anymore, and it shouldn't be repeated disk accesses, since
+      Linux should just keep the directory entry cached.
+    * Put initial work in place for myio.pas's savescreen() and friends. This
+      is probably FreePascal (and Unix?) specific code, though.
+    * Started fucking with socket interface. Gave up.  :)
+
+2000-12-13  Ryan C. Gordon   <icculus@lokigames.com>
+    * Put delay(10) call in the wait for modem initialization response, to
+      reduce CPU burn.
+    * Put delay() call in getkey() (common.pas) to stop CPU chowing.
+    * Added check to verify that the terminal is exactly 80 chars wide and
+      at least 25 chars high. (mainline of bbs.pas)
+
+2000-11-30  Ryan C. Gordon   <icculus@lokigames.com>
+    * Put delay() call in the telegard logo animation loop on the wfc menu.
+      Now the logo updates a little less than three times a second, and doesn't
+      starve the CPU.
+    * Changed Makefile temporarily to only build bbs and init.
+
+2000-11-27  Ryan C. Gordon   <icculus@lokigames.com>
+    * More Y2K crud. This is a slow, slow process.
+    * mail0.pas's initbrd() was looking for capital filenames. Fixed.
+
+2000-11-26  Ryan C. Gordon   <icculus@lokigames.com>
+    * Changed dosansi() in common.pas to just call write() instead of a
+      DOS int21h service. This allows the menus that are stored in .ANS
+      files to show up on the local side, albeit incorrectly at this point.
+    * Went on a Y2K rampage. Looked for places that used two-digit years, and
+      started making them use 4 digits. This allowed me to remove some prior
+      hacks, and make the system more robust in general. It will probably
+      introduce a few bugs where the system is less obviously expecting a two
+      digit year. We'll see. Some of the more obvious places where a two-digit
+      year might pass through now have checks that halt() if there's a problem.
+    * Changed all the INT21h-based versions of date() and time(). Have I
+      mentioned yet that I'm astounded by the amount of cut-and-pasting in
+      this codebase? I don't understand why they bothered to have a "common"
+      unit if so much common code was just duplicated all over the place.
+    * Added rcgpanic() to common.pas. Made some of the programs reference this
+      unit if they weren't already. The checks for two-digit year strings call
+      rcgpanic in case of trouble...this gives me a unified place to set a
+      break point and backtrace in gdb...
+    * init.pas filled in the init user record's birthday with a hardcoded
+      '00/00/00'. logon2.pas checks for this to see if it's a new record.
+      Fixed in both places. Changed cuser.pas's cstuff::doage() to accept and
+      understand 4-digit years.
+    * sysop3.pas showuserinfo::shi1() had an output that spilled past the 80
+      char line limit once it was printing 4-digit years. Fixed.
+
 2000-11-24  Ryan C. Gordon   <icculus@lokigames.com>
     * Aha! I think I stumbled upon the keypressed() problem. Looks like a
       piece of the overlay code was still in there and causing problems.

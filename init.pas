@@ -158,11 +158,13 @@ begin
   d:=value(copy(dt,4,2));
 
   {rcg11182000 hahahaha...a Y2K bug.  :) }
-  y:=value(copy(dt,7,2))+1900;
+  {rcg11272000 Let's make sure the values coming in here are four }
+  {digits in the first place, which should save us some hacks elsewhere...}
+  {y:=value(copy(dt,7,2))+1900;}
 
-  {rcg11182000 added this conditional. }
-  if (y < 1977) then  { Ugh...this is so bad. }
-    y := y + 100;
+  {rcg11272000 my adds...}
+  y:=value(copy(dt,7,4));
+  {rcg11272000 end my adds...}
 
   for c:=1985 to y-1 do
     if (leapyear(c)) then inc(t,366) else inc(t,365);
@@ -187,14 +189,23 @@ begin
   time:=tch(h)+':'+tch(m)+':'+tch(s);
 end;
 
-function date:astr;
-var r:registers;
-    y,m,d:string[3];
+function date:string;
+var
+    {rcg11272000 unused variable.}
+    {r:registers;}
+
+    {rcg11272000 Y2K-proofing.}
+    {y,m,d:string[3];}
+    m,d:string[3];
+    y:string[5];
     yy,mm,dd,dow:word;
+
 begin
   getdate(yy,mm,dd,dow);
-  str(yy-1900,y); str(mm,m); str(dd,d);
-  date:=tch(m)+'/'+tch(d)+'/'+tch(y);
+  {rcg11272000 Y2K-proofing.}
+  {str(yy-1900,y); str(mm,m); str(dd,d);}
+  str(yy,y); str(mm,m); str(dd,d);
+  date:=tch(m)+'/'+tch(d)+'/'+y;
 end;
 
 procedure ttl(s:string);
@@ -717,7 +728,11 @@ begin
     realname:='System Operator';
     pw:='SYSOP';
     ph:='000-000-0000';
-    bday:='00/00/00';
+
+    {rcg11272000 y2k stuff.}
+    {bday:='00/00/00';}
+    bday:='00/00/0000';
+
     firston:=date;
     laston:=date;
     street:='';
@@ -957,6 +972,9 @@ begin
 
   assign(brdf,'email.brd');
   rewrite(brdf,1);
+
+  {rcg12152000 changed for sanity...}
+  {
   lng:=$FC020010; blockwrite(brdf,lng,4);
   lng:=$DCBA0123; blockwrite(brdf,lng,4);
   blockwrite(brdf,lsize,4);
@@ -967,6 +985,20 @@ begin
     blockwrite(brdf,s[0],1);
     blockwrite(brdf,s[1],ord(s[0]));
   end;
+  }
+
+{
+  lng:=$FC020010; blockwrite(brdf,lng,sizeof (lng));
+  lng:=$DCBA0123; blockwrite(brdf,lng,sizeof (lng));
+  blockwrite(brdf,lsize,sizeof (lsize));
+
+  while (not eof(t)) do begin
+    readln(t,s);
+    bb:=$FF; blockwrite(brdf,bb,sizeof (bb));
+    blockwrite(brdf,s[0],1);
+    blockwrite(brdf,s[1],ord(s[0]));
+  end;
+}
   close(t);
   erase(t);
 

@@ -113,7 +113,9 @@ var ii:array[1..12] of astr;
                  #3#3+sex+cstr(ageuser(bday))+' ('+bday+')';
         5:ii[5]:='City / State :'+#3#3+mln(citystate,30)+#3#1+'     Zip-code:'+#3#3+zipcode;
         6:ii[6]:='Computer type:'+#3#3+mln(computer,30)+#3#1+'     Phone # :'+#3#3+ph;
-        7:ii[7]:='SysOp note   :'+#3#3+mln(note,35)+#3#1+'Last/1st:'+#3#3+laston+' ('+firston+')';
+        {rcg11272000 didn't fit on an 8-char line once the years were 4-digit.}
+        {7:ii[7]:='SysOp note   :'+#3#3+mln(note,35)+#3#1+'Last/1st:'+#3#3+laston+' ('+firston+')';}
+        7:ii[7]:='SysOp note   :'+#3#3+mln(note,35)+#3#1+'Last/1st:'+#3#3+laston+' '+firston;
         8:begin
             ii[8]:='Occupation   :'+#3#3+mln(occupation,35)+#3#1+'Lockfile:';
             if lockedout then ii[8]:=ii[8]+#3#7+lockedfile+'.MSG' else

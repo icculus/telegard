@@ -219,13 +219,20 @@ begin
   closebrd;
 
   bread:=x;
-  if (x=-1) then fn:='EMAIL' else begin
+  {rcg11272000 filename case.}
+  {if (x=-1) then fn:='EMAIL' else begin}
+  if (x=-1) then fn:='email' else begin
     loadboard(x);
     fn:=memboard.filename;
   end;
-  fn:=allcaps(fn);
+
+  {rcg11272000 filename case.}
+  {fn:=allcaps(fn);}
   brdfnopen:=fn;
-  assign(mixf,systat.msgpath+fn+'.MIX');
+
+  {rcg11272000 filename case.}
+  {assign(mixf,systat.msgpath+fn+'.MIX');}
+  assign(mixf,systat.msgpath+fn+'.mix');
   {$I-} reset(mixf,sizeof(mixr)); {$I+}
   if (ioresult<>0) then begin
     rewrite(mixf,sizeof(mixr));
@@ -243,7 +250,9 @@ begin
     blockwrite(mixf,mintab[0],100);
   end;
 
-  assign(brdf,systat.msgpath+fn+'.BRD');
+  {rcg11272000 filename case.}
+  {assign(brdf,systat.msgpath+fn+'.BRD');}
+  assign(brdf,systat.msgpath+fn+'.brd');
   {$I-} reset(brdf,1); {$I+}
   if (ioresult<>0) then rewrite(brdf,1);
 

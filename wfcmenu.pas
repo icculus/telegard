@@ -417,6 +417,8 @@ var u:userrec;
 
           rl1:=timer;
           repeat
+            {rcg12012000 delay added to stop CPU chowing...}
+            delay(10);
             if (recom1(c)) then begin
               if (c in ['0',^M]) then done:=TRUE;
               if (c in [#32..#255]) then wr(2,c);
@@ -427,7 +429,7 @@ var u:userrec;
           if (try>10) then done:=TRUE;
         until ((done) or (keypressed));
       end;
-      while (keypressed) do begin isc:=readkey; writeln(ord(isc)); end;
+      while (keypressed) do begin isc:=readkey; {writeln(ord(isc));} end;
       delay(100); com_flush_rx;
       rl1:=timer; repeat c:=ccinkey1 until (abs(timer-rl1)>0.1);
 
@@ -717,6 +719,11 @@ begin
 
     if ((systat.specialfx) and (not blankmenunow) and
         (sysopon) and (systat.usewfclogo)) then begin
+
+      {rcg11302000 added delay() so the stupid Telegard animation}
+      {doesn't eat all the processor time...}
+      delay(10);
+
       inc(duh);
       if (duh=30) then begin
         duh:=0; inc(txt); if (txt>5) then txt:=0;
@@ -945,7 +952,7 @@ begin
                 cwrite(#3#3+'Log on? ('+#3#11+'Y'+#3#3+'/'+#3#11+'N'+
                        #3#3+'-'+#3#11+'F'+#3#3+'ast) : ');
                 rl2:=timer;
-                while (not keypressed) and (abs(timer-rl2)<30.0) do;
+                while (not keypressed) and (abs(timer-rl2)<30.0) do delay(10);
                 if (keypressed) then c:=readkey else c:='N';
                 c:=upcase(c); writeln(c);
                 case c of

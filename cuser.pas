@@ -84,16 +84,28 @@ var done,done1:boolean;
     end;
 
   begin
-    if (how=3) then prompt('Enter date of birth (mm/dd/yy) : ')
+    {rcg11272000 y2k stuff.}
+    {if (how=3) then prompt('Enter date of birth (mm/dd/yy) : ')}
+
+    if (how=3) then prompt('Enter date of birth (mm/dd/yyyy) : ')
     else begin
       sprint('^301^5=January   ^304^5=April  ^307^5=July       ^310^5=October');
       sprint('^302^5=February  ^305^5=May    ^308^5=August     ^311^5=November');
       sprint('^303^5=March     ^306^5=June   ^309^5=September  ^312^5=December');
       nl;
-      prt('Enter your date of birth (mm/dd/yy) : ');
+      {rcg11272000 y2k stuff.}
+      {prt('Enter your date of birth (mm/dd/yy) : ');}
+      prt('Enter your date of birth (mm/dd/yyyy) : ');
     end;
+
+    {rcg11272000 y2k stuff.}
+    {
     cl(3); input(s,8);
     if ((length(s)=8) and (s[3]='/') and (s[6]='/')) then
+    }
+
+    cl(3); input(s,10);
+    if ((length(s)=10) and (s[3]='/') and (s[6]='/')) then
       if (numsok(s)) then
         if (ageuser(s)<3) then
           sprint(#3#7+'Isn''t '+cstr(ageuser(s))+' years old a little YOUNG???')

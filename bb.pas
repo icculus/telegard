@@ -5,7 +5,7 @@ program BatchBackup;
 
 uses
   crt,dos,
-  myio;
+  myio, common;
 
 {$I func.pas}
 
@@ -52,6 +52,8 @@ begin
 end;
 
 function sdat(dt:datetime):string;
+{rcg11272000 my add.}
+var yearstr:string;
 
   function tch(i:integer):string;
   var s:string;
@@ -63,15 +65,25 @@ function sdat(dt:datetime):string;
   end;
 
 begin
-  with dt do
-    sdat:=tch(month)+'/'+tch(day)+'/'+tch(year-1900)+' '+tch(hour)+':'+tch(min)+':'+tch(sec);
+  with dt do begin
+    {rcg11272000 y2k stuff.}
+    {sdat:=tch(month)+'/'+tch(day)+'/'+tch(year-1900)+' '+tch(hour)+':'+tch(min)+':'+tch(sec);}
+    str(year,yearstr);
+    sdat:=tch(month)+'/'+tch(day)+'/'+yearstr+' '+tch(hour)+':'+tch(min)+':'+tch(sec);
+  end;
 end;
 
 procedure unsdat(s:string; var dt:datetime);
 var x:integer;
 begin
+
+  {rcg11272000 my add...}
+  if (length(s) < 10) then rcgpanic('WHOA! TWO DIGIT YEAR IN DATE!');
+
   with dt do begin
-    val(copy(s,7,2),year,x); inc(year,1900);
+    {rcg11272000 Y2K-proofing.}
+    {val(copy(s,7,2),year,x); inc(year,1900);}
+    val(copy(s,7,4),year,x);
     val(copy(s,1,2),month,x);
     val(copy(s,4,2),day,x);
     val(copy(s,10,2),hour,x);

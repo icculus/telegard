@@ -77,15 +77,20 @@ var ul:text;
   function checkbday:boolean;
   var i,j:integer;
   begin
-    i:=85;
+    {rcg11282000 Y2K stuff.}
+    {i:=85;}
+    i := 1985;
     repeat
-      j:=daynum(copy(thisuser.bday,1,6)+tch(cstr(i)));
+      {rcg11282000 y2k stuff.}
+      {j:=daynum(copy(thisuser.bday,1,6)+tch(cstr(i)));}
+      j:=daynum(copy(thisuser.bday,1,6)+cstr(i));
       if (daynum(date)>=j) and (daynum(thisuser.laston)<j) then begin
         checkbday:=TRUE;
         exit;
       end;
       inc(i);
-    until (i>value(copy(date,7,2)));
+    {until (i>value(copy(date,7,2)));}
+    until (i>value(copy(date,7,4)));
     checkbday:=FALSE;
   end;
 
@@ -247,7 +252,9 @@ begin
   if (not wasguestuser) then
   begin
     if (thisuser.flistopt=0) then thisuser.flistopt:=1;
-    if (thisuser.bday='00/00/00') then begin
+    {rcg11272000 y2k stuff.}
+    {if (thisuser.bday='00/00/00') then begin}
+    if (thisuser.bday='00/00/0000') then begin
       print('Updating system records ...');
       cstuff(2,1,thisuser);
       nl;

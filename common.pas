@@ -19,6 +19,13 @@ type f_initexecswap = function(p:pointer; s:string):boolean;
      f_execwithswap = function(p,c:string):word;
      p_shutdownexecswap = procedure;
 
+
+{rcg12012000 my adds.}
+var ansibuf:string;
+const ansiset:set of char=['0'..'9','A'..'D','[',';','?','H', 'J','K','m','h'];
+{rcg12012000 my adds end.}
+
+
 var initexecswap2:f_initexecswap;
     execwithswap2:f_execwithswap;
     shutdownexecswap2:p_shutdownexecswap;
@@ -251,6 +258,10 @@ var
     end;
     ubatchv:array[1..maxubatchfiles] of ^verbrec;
     hiubatchv:integer;
+
+
+{rcg11272000 added by me.}
+procedure rcgpanic(s:string);
 
 
 function lenn(s:string):integer;
@@ -514,6 +525,18 @@ procedure com_set_speed(speed:word); begin tmpcom.com_set_speed(speed); end;
 
 var cfilter:cfilterrec;
     cfiltertype,cfilternum,cfiltercount:integer;
+
+
+{rcg11272000 added by me.}
+procedure rcgpanic(s:string);
+begin
+    NormVideo;
+    clrscr;
+    writeln('PANIC: ' + s + ' ...');
+    writeln(' ... halting ...');
+    halt(69);
+end;
+
 
 procedure shelldos(bat:boolean; cl:string; var rcode:integer);
 var t:text;
@@ -1053,8 +1076,7 @@ begin
 end;
 }
 begin
-   writeln('STUB: common.pas; sysop1()...');
-   sysop1 := FALSE;
+    sysop1 := exist(systat.gfilepath+'sysop.in');
 end;
 
 
@@ -1130,13 +1152,22 @@ begin
 end;
 
 function date:string;
-var r:registers;
-    y,m,d:string[3];
+var
+    {rcg11272000 unused variable.}
+    {r:registers;}
+
+    {rcg11272000 Y2K-proofing.}
+    {y,m,d:string[3];}
+    m,d:string[3];
+    y:string[5];
     yy,mm,dd,dow:word;
+
 begin
   getdate(yy,mm,dd,dow);
-  str(yy-1900,y); str(mm,m); str(dd,d);
-  date:=tch(m)+'/'+tch(d)+'/'+tch(y);
+  {rcg11272000 Y2K-proofing.}
+  {str(yy-1900,y); str(mm,m); str(dd,d);}
+  str(yy,y); str(mm,m); str(dd,d);
+  date:=tch(m)+'/'+tch(d)+'/'+y;
 end;
 
 function value(s:string):longint;
@@ -1167,12 +1198,16 @@ end;
 function ageuser(bday:string):integer;
 var i:integer;
 begin
-  i:=value(copy(date,7,2))-value(copy(bday,7,2));
 
-  {rcg11242000 Y2K hack.}
-  i := i + 100;
+  {rcg11272000 my add...}
+  if (length(bday) < 10) then rcgpanic('WHOA! TWO DIGIT YEAR IN BIRTHDAY DATE!');
 
-  if (daynum(copy(bday,1,6)+copy(date,7,2))>daynum(date)) then dec(i);
+  {rcg11272000 y2k issues...}
+  {i:=value(copy(date,7,2))-value(copy(bday,7,2));}
+  {if (daynum(copy(bday,1,6)+copy(date,7,2))>daynum(date)) then dec(i);}
+
+  i:=value(copy(date,7,4))-value(copy(bday,7,4));
+  if (daynum(copy(bday,1,6)+copy(date,7,4))>daynum(date)) then dec(i);
   ageuser:=i;
 end;
 
@@ -1222,13 +1257,15 @@ begin
   t:=0;
   m:=value(copy(dt,1,2));
   d:=value(copy(dt,4,2));
-
   {rcg11182000 hahahaha...a Y2K bug.  :) }
-  y:=value(copy(dt,7,2))+1900;
+  {rcg11272000 Let's make sure the values coming in here are four }
+  {digits in the first place, which should save us some hacks elsewhere...}
+  {y:=value(copy(dt,7,2))+1900;}
 
-  {rcg11182000 added this conditional. }
-  if (y < 1977) then  { Ugh...this is so bad. }
-    y := y + 100;
+  {rcg11272000 my adds...}
+  if (length(dt) < 10) then rcgpanic('WHOA! TWO DIGIT YEAR IN DATE!');
+  y:=value(copy(dt,7,4));
+  {rcg11272000 end my adds...}
 
   for c:=1985 to y-1 do
     if (leapyear(c)) then inc(t,366) else inc(t,365);
@@ -1483,6 +1520,8 @@ end;
 *)
 
 procedure dosansi(c:char);
+{rcg11262000 DOSism.}
+{
 var r:registers;
 begin
   with r do begin
@@ -1490,6 +1529,31 @@ begin
     msdos(r);
   end;
 end;
+}
+
+{rcg12012000 must buffer ANSI sequences for bug in FreePascal.}
+
+begin
+
+    { there's something in the buffer and it can be safely dumped? }
+    if ((ansibuf[0] <> #0) and (not (c in ansiset))) then
+    begin
+        write(ansibuf);        { dump to crt driver. }
+        ansibuf[0] := #0;      { reset buffer. }
+    end;
+
+    if ((ansibuf[0] <> #0) or (c = #27)) then  { add to or start the buffer? }
+    begin
+        inc(ansibuf[0]);
+        ansibuf[ord(ansibuf[0])] := c;
+    end
+
+    else
+    begin
+        write(c);  { no need to buffer at this time; just write to crt... }
+    end;
+end;
+
 
 procedure lpromptc(c:char);
 var ss:string;
@@ -1944,6 +2008,9 @@ begin
             5:begin sound(3400); delay(55); end;
           end;
           aphase:=aphase mod 5+1;
+        {rcg12132000 else added by me to stop CPU chowing.}
+        end else begin
+            delay(10);
         end;
 
         if (ch) then c:=chinkey else c:=inkey;
@@ -2850,10 +2917,15 @@ function verline(i:integer):string;
 var s:string;
 begin
   case i of
+    {rcg11252000 changed.}
+    {
     1:begin
         s:='Project Coyote 0.14 Alpha ';
       end;
     2:s:='Complied By Robert Merritt on 11-19-92';
+    }
+    1:s:='Penguin Telegard 0.0.1';
+    2:s:='Send complaints to Ryan C. Gordon <icculus@lokigames.com>';
   end;
   verline:=s;
 end;

@@ -406,28 +406,34 @@ begin
 end;
 
 procedure savescreen(var wind:windowrec; TLX,TLY,BRX,BRY:integer);
-{rcg11172000 this only flies under DOS.}
-{
 var x,y,i:integer;
+{rcg12152000 my add.}
+arraypos : integer;
 begin
   checkvidseg;
+
+    { !!! uhoh...problems in xterms? }
 
   wind[4000]:=TLX; wind[4001]:=TLY;
   wind[4002]:=BRX; wind[4003]:=BRY;
 
+
   i:=0;
   for y:=TLY to BRY do
     for x:=TLX to BRX do begin
+      {rcg11172000 this only flies under DOS.}
+      {
       inline($FA);
       wind[i]:=mem[vidseg:(160*(y-1)+2*(x-1))];
       wind[i+1]:=mem[vidseg:(160*(y-1)+2*(x-1))+1];
       inline($FB);
+      }
+      { !!! this might be FreePascal/Linux-specific...}
+      arraypos := ((y * ScreenWidth) + x);
+      wind[i] := byte(ConsoleBuf^[arraypos].ch);
+      wind[i+1] := ConsoleBuf^[arraypos].attr;
       inc(i,2);
     end;
-end;
-}
-begin
-  writeln('STUB: myio.pas; savescreen()...');
 end;
 
 procedure setwindow(var wind:windowrec; TLX,TLY,BRX,BRY,tcolr,bcolr,boxtype:integer);
@@ -442,9 +448,9 @@ begin
 end;
 
 procedure removewindow(wind:windowrec);
-{rcg11172000 this only flies under DOS.}
-{
 var TLX,TLY,BRX,BRY,x,y,i:integer;
+{rcg12152000 my add.}
+arraypos : integer;
 begin
   checkvidseg;
 
@@ -457,16 +463,19 @@ begin
   i:=0;
   for y:=TLY to BRY do
     for x:=TLX to BRX do begin
+      {rcg11172000 this only flies under DOS.}
+      {
       inline($FA);
       mem[vidseg:(160*(y-1)+2*(x-1))]:=wind[i];
       mem[vidseg:(160*(y-1)+2*(x-1))+1]:=wind[i+1];
       inline($FB);
+      }
+      { !!! this might be FreePascal/Linux-specific...}
+      arraypos := ((y * ScreenWidth) + x);
+      ConsoleBuf^[arraypos].ch := char(wind[i]);
+      ConsoleBuf^[arraypos].attr := wind[i+1];
       inc(i,2);
     end;
-end;
-}
-begin
-  writeln('STUB: myio.pas; removewindow()...');
 end;
 
 procedure removewindow1(wind:windowrec);
@@ -483,9 +492,9 @@ begin
 end;
 
 procedure movewindow(wind:windowrec; TLX,TLY:integer);
-{rcg11172000 this only flies under DOS.}
-{
 var BRX,BRY,x,y,i:integer;
+{rcg12152000 my add.}
+arraypos : integer;
 begin
   checkvidseg;
 
@@ -498,16 +507,19 @@ begin
   i:=0;
   for y:=TLY to BRY do
     for x:=TLX to BRX do begin
+      {rcg11172000 this only flies under DOS.}
+      {
       inline($FA);
       mem[vidseg:(160*(y-1)+2*(x-1))]:=wind[i];
       mem[vidseg:(160*(y-1)+2*(x-1))+1]:=wind[i+1];
       inline($FB);
+      }
+      { !!! this might be FreePascal/Linux-specific...}
+      arraypos := ((y * ScreenWidth) + x);
+      wind[i] := byte(ConsoleBuf^[arraypos].ch);
+      wind[i+1] := ConsoleBuf^[arraypos].attr;
       inc(i,2);
     end;
-end;
-}
-begin
-  writeln('STUB: myio.pas; movewindow()...');
 end;
 
 end.

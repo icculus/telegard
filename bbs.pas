@@ -212,6 +212,25 @@ Begin
     close(systatf);
   end;
 
+
+  {rcg12132000 added checks. Friggin' Xterms... :)  }
+  if (ScreenWidth <> 80) then
+  begin
+        writeln;
+        writeln('Your terminal needs to be exactly 80 characters wide to run the BBS.');
+        writeln(' If this is a window, please resize it.');
+        halt(254);
+  end;
+
+  if ((ScreenHeight < 25) or (ScreenHeight > 50)) then
+  begin
+        writeln;
+        writeln('Your terminal must be between 25 and 50 characters high to run the BBS.');
+        writeln(' If this is a window, please resize it.');
+        halt(254);
+  end;
+
+
   {rcg11172000 No overlay on Linux.}
   {
   ovrinit('bbs.OVR');

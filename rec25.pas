@@ -83,10 +83,14 @@ TYPE
     realname:string[36];              { real name        }
     pw:string[20];                    { user password    }
     ph:string[12];                    { user phone #     }
-    bday:string[8];                   { user birthdate   }
-    firston:string[8];                { firston date     }
+    {rcg11272000 Y2K limitations.}
+    (*bday:string[8];                   { user birthdate   }*)
+    (*firston:string[8];                { firston date     }*)
+    (*laston:string[8];                 { laston date      }*)
+    bday:string[10];                   { user birthdate   }
+    firston:string[10];                { firston date     }
     x1xs  :array[1..2] of byte;
-    laston:string[8];                 { laston date      }
+    laston:string[10];                 { laston date      }
     x2xs  :array[1..2] of byte;
     street:string[30];                { mailing address  }
     citystate:string[30];             { city, state      }
@@ -224,7 +228,9 @@ TYPE
 
   zlogrec=                        { ZLOG.DAT : System log }
   record
-    date:string[8];
+    {rcg11272000 Y2K bullshite.}
+    {date:string[8];}
+    date:string[10];
     userbaud:array[0..4] of integer;
     active,calls,newusers,pubpost,privpost,fback,criterr:integer;
     uploads,downloads:integer;
@@ -341,7 +347,9 @@ TYPE
     closedsystem:boolean;             { DON'T allow new users? }
     swapshell:boolean;                { is swap shell function enabled? }
     eventwarningtime:integer;         { time before event warning }
-    tfiledate:string[8];              { last date text-files were inserted }
+    {rcg11272000 y2k stuff.}
+    (*tfiledate:string[8];              { last date text-files were inserted }*)
+    tfiledate:string[10];             { last date text-files were inserted }
     lastmsgid:longint;                { last-used message ID (sequential) }
     res1:array[1..20] of byte;        { RESERVED SPACE #1 }
 
@@ -452,7 +460,9 @@ TYPE
     dlkratio,                         { DLk/ULk ratios }
     postratio:secrange;               { post/call ratios }
 
-    lastdate:string[8];               { last system date }
+    {rcg11272000 y2k stuff.}
+    (*lastdate:string[8];               { last system date }*)
+    lastdate:string[10];              { last system date }
     curwindow:byte;                   { type of SysOp window currently in use }
     istopwindow:boolean;              { is SysOp window on top of screen? }
     callernum:longint;                { total number of callers }
@@ -479,7 +489,9 @@ TYPE
   record
     title:string[40];             { title }
     filen:string[12];             { filename }
-    gdate:string[8];              { date of Tfile / Tfile base }
+    {rcg11272000 Y2K shit.}
+    (*gdate:string[8];              { date of Tfile / Tfile base }*)
+    gdate:string[10];             { date of Tfile / Tfile base }
     gdaten:integer;               { numeric date for fast calculation }
     acs,                          { access requirement }
     ulacs:acstring;               { upload to base access requirement }
@@ -590,6 +602,8 @@ TYPE
     blocks:integer;               { # 128 byte blks }
     owner:integer;                { ULer of file }
     stowner:string[36];           { ULer's name }
+    {rcg11272000 y2k stuff.}
+    (*date:string[8];               { Date ULed }*)
     date:string[8];               { Date ULed }
     daten:integer;                { Numeric date ULed }
     vpointer:longint;             { Pointer to verbose descr, -1 if none }

@@ -51,7 +51,12 @@ begin
   unpacktime(dirinfo.time,dt);
   with dt do begin
     if hour<13 then pm:='a' else begin pm:='p'; hour:=hour-12; end;
+    {rcg11272000 Y2K-proofing.}
+    {
     s:=s+'  '+mrn(cstr(month),2)+'-'+ti(day)+'-'+ti(year-1900)+
+             '  '+mrn(cstr(hour),2)+':'+ti(min)+pm;
+    }
+    s:=s+'  '+mrn(cstr(month),2)+'-'+ti(day)+'-'+cstr(year)+
              '  '+mrn(cstr(hour),2)+':'+ti(min)+pm;
   end;
   info:=s;

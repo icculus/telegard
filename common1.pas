@@ -292,7 +292,9 @@ end;
 procedure chatfile(b:boolean);
 var bf:file of byte;
     s:string[91];
+    trimmedfile:string;
     cr:boolean;
+    i, j: integer;
 begin
   s:='chat';
   if (thisuser.chatseperate) then s:=s+cstr(usernum);

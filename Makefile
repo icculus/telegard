@@ -31,11 +31,11 @@ endif
 ifeq ($(strip $(debug)),true)
     BUILDDIR := $(cpu)/Debug
     PPC386FLAGS += -g    # include debug symbols.
-    #PPC386FLAGS += -gc   # generate checks for pointers.
-    #PPC386FLAGS += -Ct   # generate stack-checking code.
-    #PPC386FLAGS += -Cr   # generate range-checking code.
-    #PPC386FLAGS += -Co   # generate overflow-checking code.
-    #PPC386FLAGS += -Ci   # generate I/O-checking code.
+    PPC386FLAGS += -gc   # generate checks for pointers.
+    PPC386FLAGS += -Ct   # generate stack-checking code.
+    PPC386FLAGS += -Cr   # generate range-checking code.
+    PPC386FLAGS += -Co   # generate overflow-checking code.
+    PPC386FLAGS += -Ci   # generate I/O-checking code.
 else
     BUILDDIR := $(cpu)/Release
     PPC386FLAGS += -Xs   # strip the binary.
@@ -70,10 +70,10 @@ PPC386FLAGS += -Sg
 #PPC386FLAGS += -Sm
 
 # Assembly statements are Intel-like (instead of AT&T-like).
-#PPC386FLAGS += -Rintel
+PPC386FLAGS += -Rintel
 
 # Output target Linux.  !!! FIXME: Want win32 compiles?
-#PPC386FLAGS += -TLINUX
+PPC386FLAGS += -TLINUX
 
 # Pipe output to assembler, rather than to temp file. This is a little faster.
 #PPC386FLAGS += -P
@@ -107,7 +107,8 @@ SPDATEEXE=$(BUILDDIR)/spdate
 $(BUILDDIR)/%.o : %.pas
 	$(PPC386) $(PPC386FLAGS) $<
 
-all: $(BUILDDIR) $(MAINEXE) $(MINITERMEXE) $(INITEXE) $(TPAGEEXE) $(IFLEXE) \
+all: $(BUILDDIR) $(MAINEXE) $(INITEXE)  #\
+     $(MINITERMEXE) $(TPAGEEXE) $(IFLEXE) \
      $(FINDITEXE) $(OBLITEXE) $(MTESTEXE) $(BBEXE) $(CBBSEXE) \
      $(MABSEXE) $(COCONFIGEXE) $(SPDATEEXE) $(T2TEXE)
 
