@@ -27,6 +27,8 @@ var buffer:array[1..16384] of byte;
     src,dest:file;
 
   procedure dodate;
+  {rcg11172000 DOSism. Stubbed.}
+  {
   var r:registers;
       od,ot,ha:integer;
   begin
@@ -40,6 +42,10 @@ var buffer:array[1..16384] of byte;
       ha:=ax; bx:=ha; ax:=$5701; cx:=ot; dx:=od; msdos(dos.registers(r));
       ax:=$3e00; bx:=ha; msdos(dos.registers(r));
     end;
+  end;
+  }
+  begin
+     writeln('STUB: file2.pas; dodate()...');
   end;
 
 begin
