@@ -1,0 +1,38 @@
+
+ Start  Stop   Length Name               Class
+
+ 00000H 001AEH 001AFH CODE               
+ 001B0H 001B0H 00000H DATA               
+
+Undefined symbol 'ASYNC_UART_IIR' in module ASYINT.ASM
+Undefined symbol 'ASYNC_BASE' in module ASYINT.ASM
+Undefined symbol 'ASYNC_DO_XONXOFF' in module ASYINT.ASM
+Undefined symbol 'ASYNC_XOFF_RECEIVED' in module ASYINT.ASM
+Undefined symbol 'ASYNC_XOFF_REC_DISPLAY' in module ASYINT.ASM
+Undefined symbol 'ASYNC_XON_REC_DISPLAY' in module ASYINT.ASM
+Undefined symbol 'ASYNC_LINE_STATUS' in module ASYINT.ASM
+Undefined symbol 'ASYNC_BUFFER_HEAD' in module ASYINT.ASM
+Undefined symbol 'ASYNC_BUFFER_PTR' in module ASYINT.ASM
+Undefined symbol 'ASYNC_BUFFER_USED' in module ASYINT.ASM
+Undefined symbol 'ASYNC_MAXBUFFERUSED' in module ASYINT.ASM
+Undefined symbol 'ASYNC_BUFFER_SIZE' in module ASYINT.ASM
+Undefined symbol 'ASYNC_BUFFER_TAIL' in module ASYINT.ASM
+Undefined symbol 'ASYNC_BUFFER_HIGH' in module ASYINT.ASM
+Undefined symbol 'ASYNC_XOFF_SENT' in module ASYINT.ASM
+Undefined symbol 'ASYNC_BUFFER_HIGH_2' in module ASYINT.ASM
+Undefined symbol 'ASYNC_SEND_XOFF' in module ASYINT.ASM
+Undefined symbol 'ASYNC_DO_DSR' in module ASYINT.ASM
+Undefined symbol 'ASYNC_UART_MSR' in module ASYINT.ASM
+Undefined symbol 'ASYNC_DO_CTS' in module ASYINT.ASM
+Undefined symbol 'ASYNC_OBUFFER_TAIL' in module ASYINT.ASM
+Undefined symbol 'ASYNC_OBUFFER_HEAD' in module ASYINT.ASM
+Undefined symbol 'ASYNC_UART_IER' in module ASYINT.ASM
+Undefined symbol 'ASYNC_MODEM_STATUS' in module ASYINT.ASM
+Undefined symbol 'ASYNC_OBUFFER_PTR' in module ASYINT.ASM
+Undefined symbol 'ASYNC_OBUFFER_USED' in module ASYINT.ASM
+Undefined symbol 'ASYNC_OBUFFER_SIZE' in module ASYINT.ASM
+Undefined symbol 'ASYNC_UART_LSR' in module ASYINT.ASM
+Undefined symbol 'ASYNC_LINE_ERROR_FLAGS' in module ASYINT.ASM
+Program entry point at 0000:0000
+Warning: no stack
+

@@ -1,0 +1,14 @@
+         'E':if ((mso) and (lastname<>'')) then
+                editmessage(cn)
+              else begin
+                loadmhead(cn,mheader);
+                if ((mheader.fromi.usernum=usernum) and
+                  (allcaps(mheader.fromi.real)=
+                  allcaps(thisuser.realname))) then
+                  editmessage(cn)
+                else begin
+                  nl;
+                  print('You didn''t post this message!');
+                  nl;
+                end;
+              end;

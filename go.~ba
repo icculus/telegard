@@ -1,0 +1,3 @@
+copy bbs.exe c:\temp
+copy bbs.ovr c:\temp
+

@@ -1,0 +1,22 @@
+
+
+2000-11-17  Ryan C. Gordon   <icculus@lokigames.com>
+
+    * Initial work.
+
+    * Wrote Makefile.
+
+    * filenames -> lowercase, dos2unix'd them.
+
+    * Stubbed offending DOSisms, like direct video writes and serial port i/o.
+
+    * Commented out "uses overlay" commands.
+
+    * Renamed newcommm.pas to newcom.pas ...
+
+    * Fixed some other syntax stuff that doesn't fly under Free Pascal.
+
+
+// end of CHANGELOG ...
+
+

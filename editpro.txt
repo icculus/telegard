@@ -1,0 +1,44 @@
+procedure editmessage(i:integer);
+var t:text;
+    f:file;
+    mheader:mheaderrec;
+    mixr:msgindexrec;
+    s:string;
+    brdsig,dfdt1,dfdt2,newmsgptr,totload:longint;
+begin
+  loadmhead(i,mheader);
+
+  assign(t,'tgtempx.msg'); rewrite(t);
+  totload:=0;
+  repeat
+    blockreadstr2(brdf,s);
+    inc(totload,length(s)+2);
+    writeln(t,s);
+  until (totload>=mheader.msglength);
+  close(t);
+  getftime(t,dfdt1);
+
+  tedit(allcaps('tgtempx.msg'));
+  assign(f,'tgtempx.msg');
+  getftime(f,dfdt2);
+  close(f);
+
+  if (dfdt1<>dfdt2) then begin
+    assign(t,'tgtempx.msg');
+    reset(t);
+    mheader.msglength:=0;
+    repeat
+      readln(t,s);
+      inc(mheader.msglength,length(s)+2);
+    until (eof(t));
+    close(f);
+    newmsgptr:=filesize(brdf);
+    seek(brdf,newmsgptr);
+    outmessagetext('tgtempx.msg',mheader,TRUE);
+    ensureloaded(i);
+    mixr:=mintab[getmixnum(i)];
+    mixr.hdrptr:=newmsgptr;
+    savemix(mixr,i);
+    ensureloaded(i);
+  end;
+end;

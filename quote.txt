@@ -1,0 +1,11 @@
+   assign(t,'msgtmp'); rewrite(t);
+    totload:=0;
+    writeln(t,'----------Begin Quote----------');
+    repeat
+      blockreadstr2(brdf,s);
+      inc(totload,length(s)+2);
+      s:=copy(''+stripcolor(s),1,80);
+      writeln(t,s);
+    until (totload+1>=mheader.msglength);
+    writeln(t,'-----------End Qoute-----------');
+    close(t);
