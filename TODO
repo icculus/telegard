@@ -1,0 +1,6 @@
+- grep -i "DOS" *
+- rm sources ; cvs remove sources ; cvs commit -m "not needed" sources
+- cvs add TODO ; cvs commit -m "initial add." TODO
+- Look for calls to bslash() and isul().
+- Looks for DOSisms in ifl.pas.
+
